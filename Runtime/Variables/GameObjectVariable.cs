@@ -1,6 +1,6 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    [CreateAssetMenu(menuName = "Variable/GameObjectVariable")]
+    [CreateAssetMenu(menuName = "TobleroneBox/Variable/GameObjectVariable")]
     public class GameObjectVariable : GenericVariable<GameObject> { }
 }

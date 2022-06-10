@@ -1,6 +1,6 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    [CreateAssetMenu(menuName = "Variable/FloatVariable")]
+    [CreateAssetMenu(menuName = "TobleroneBox/Variable/FloatVariable")]
     public class FloatVariable : GenericVariable<float> { }
 }

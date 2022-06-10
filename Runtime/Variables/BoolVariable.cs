@@ -1,6 +1,6 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    [CreateAssetMenu(menuName = "Variable/BoolVariable")]
+    [CreateAssetMenu(menuName = "TobleroneBox/Variable/BoolVariable")]
     public class BoolVariable : GenericVariable<bool> { }
 }
