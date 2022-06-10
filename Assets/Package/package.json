@@ -1,7 +1,7 @@
 {
 	"name": "com.toblerone.toolbox",
 	"version": "1.0.0",
-	"displayName": "[Toblerone] Toolbox",
+	"displayName": "TobleroneBox",
 	"description": "Just a personal toolbox with things that can make development easier",
 	"unity": "2020.3",
 	"dependencies": {

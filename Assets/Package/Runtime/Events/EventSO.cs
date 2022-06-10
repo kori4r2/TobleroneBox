@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    [CreateAssetMenu(menuName = "Events/VoidEvent")]
+    [CreateAssetMenu(menuName = "TobleroneBox/Events/VoidEvent")]
     public class EventSO : ScriptableObject {
         private List<IEventListener> listeners = new List<IEventListener>();
 
