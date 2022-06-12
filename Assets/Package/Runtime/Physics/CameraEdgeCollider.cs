@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public class Bounds : MonoBehaviour {
+    public class CameraEdgeCollider : MonoBehaviour {
         #region Static Variables and Properties
         public const string boundsTag = "Bounds";
         private static Vector2 FirstCorner => new Vector2(-1, 1);
