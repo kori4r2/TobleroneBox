@@ -1,12 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 namespace Toblerone.Toolbox {
-    [System.Serializable]
+    [Serializable]
     public class PointerInputProcessor {
         [SerializeField] private InputActionReference pointerPressAction;
+        private InputAction pressAction = null;
         [SerializeField] private InputActionReference pointerPositionAction;
+        private InputAction positionAction = null;
         private Vector2 pointerPosition = Vector2.zero;
         public Vector2 PointerPosition => pointerPosition;
 
@@ -22,25 +25,37 @@ namespace Toblerone.Toolbox {
             }
         }
 
-        public PointerInputProcessor(InputActionReference pressAction, InputActionReference positionAction) {
-            pointerPressAction = pressAction;
-            pointerPositionAction = positionAction;
+        public PointerInputProcessor(InputActionReference pressAction, InputActionReference positionAction)
+            : this(pressAction.action, positionAction.action) {
+        }
+
+        public PointerInputProcessor(InputAction pressAction, InputAction positionAction) {
+            this.pressAction = pressAction;
+            this.positionAction = positionAction;
         }
 
         public void Enable() {
-            pointerPressAction.action.started += OnPressPointer;
-            pointerPressAction.action.canceled += OnReleasePointer;
-            pointerPositionAction.action.performed += OnMovePointer;
+            InitActionsIfNull();
+            pressAction.started += OnPressPointer;
+            pressAction.canceled += OnReleasePointer;
+            positionAction.performed += OnMovePointer;
+        }
+
+        private void InitActionsIfNull() {
+            if (pressAction == null)
+                pressAction = pointerPressAction.action;
+            if (positionAction == null)
+                positionAction = pointerPositionAction.action;
         }
 
         public void Disable() {
-            pointerPressAction.action.started -= OnPressPointer;
-            pointerPressAction.action.canceled -= OnReleasePointer;
-            pointerPositionAction.action.performed -= OnMovePointer;
+            pressAction.started -= OnPressPointer;
+            pressAction.canceled -= OnReleasePointer;
+            positionAction.performed -= OnMovePointer;
         }
 
         private void OnPressPointer(InputAction.CallbackContext context) {
-            Vector2 currentPositionActionValue = pointerPositionAction.action.ReadValue<Vector2>();
+            Vector2 currentPositionActionValue = positionAction.ReadValue<Vector2>();
             UpdatePointerPosition(currentPositionActionValue);
             onPress?.Invoke();
         }
