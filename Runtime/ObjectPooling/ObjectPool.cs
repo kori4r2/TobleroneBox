@@ -50,6 +50,7 @@ namespace Toblerone.Toolbox {
         protected void ExpandPool() {
             if (expandOneByOne) {
                 InstantiateNewPoolObject();
+                poolSize++;
             } else {
                 BuildPool();
                 poolSize += poolSize;
