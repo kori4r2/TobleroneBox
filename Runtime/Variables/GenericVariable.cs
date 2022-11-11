@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public abstract class GenericVariable<T> : ScriptableObject {
-        private List<IVariableObserver<T>> observers = new List<IVariableObserver<T>>();
-        [SerializeField] private T value;
+        protected List<IVariableObserver<T>> observers = new List<IVariableObserver<T>>();
+        [SerializeField] protected T value;
 
         public T Value {
             get => value;
@@ -14,7 +14,7 @@ namespace Toblerone.Toolbox {
             }
         }
 
-        private void NotifyObservers() {
+        protected void NotifyObservers() {
             foreach (IVariableObserver<T> observer in observers) {
                 if (observer != null)
                     observer.OnValueChanged(Value);

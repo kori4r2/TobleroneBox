@@ -4,9 +4,9 @@ using UnityEngine.Events;
 namespace Toblerone.Toolbox {
     [System.Serializable]
     public class VariableObserver<T> : IVariableObserver<T> {
-        [SerializeField] private GenericVariable<T> observedVariable;
+        [SerializeField] protected GenericVariable<T> observedVariable;
         public GenericVariable<T> ObservedVariable => observedVariable;
-        [SerializeField] private UnityEvent<T> callbackOnChange = new UnityEvent<T>();
+        [SerializeField] protected UnityEvent<T> callbackOnChange = new UnityEvent<T>();
 
         public VariableObserver(GenericVariable<T> variable, UnityAction<T> response) {
             observedVariable = variable;

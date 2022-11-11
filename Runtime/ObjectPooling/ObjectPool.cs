@@ -52,6 +52,7 @@ namespace Toblerone.Toolbox {
                 InstantiateNewPoolObject();
             } else {
                 BuildPool();
+                poolSize += poolSize;
             }
         }
 

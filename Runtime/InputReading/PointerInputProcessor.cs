@@ -6,9 +6,9 @@ using UnityEngine.InputSystem;
 namespace Toblerone.Toolbox {
     [Serializable]
     public class PointerInputProcessor {
-        [SerializeField] private InputActionReference pointerPressAction;
+        [SerializeField] private InputActionReference pointerPressAction = null;
         private InputAction pressAction = null;
-        [SerializeField] private InputActionReference pointerPositionAction;
+        [SerializeField] private InputActionReference pointerPositionAction = null;
         private InputAction positionAction = null;
         private Vector2 pointerPosition = Vector2.zero;
         public Vector2 PointerPosition => pointerPosition;

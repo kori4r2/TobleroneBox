@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public class EventsResponseList : MonoBehaviour {
-        [SerializeField] private List<EventListener> eventListeners;
+        [SerializeField] private List<EventListener> eventListeners = new List<EventListener>();
 
         private void OnEnable() {
             foreach (EventListener listener in eventListeners) {
