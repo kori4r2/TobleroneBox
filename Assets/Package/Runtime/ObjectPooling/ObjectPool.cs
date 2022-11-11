@@ -3,8 +3,11 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolableObject {
+        protected const string expandTooltip = "Expand pool by one object at a time or by Pool Size when over the limit";
         protected abstract T ObjectPrefab { get; }
         [SerializeField] protected int poolSize;
+        [SerializeField, Tooltip(expandTooltip)] protected bool expandOneByOne = true;
+        [SerializeField] protected GenericVariable<ObjectPool<T>> reference;
         public int PoolSize => poolSize;
         protected abstract GenericEvent<T> DespawnedObjectEvent { get; }
         protected GenericEventListener<T> despawnedObjectEventListener;
@@ -17,9 +20,13 @@ namespace Toblerone.Toolbox {
 
         protected virtual void BuildPool() {
             for (int index = 0; index < poolSize; index++) {
-                T newObject = Instantiate(ObjectPrefab, Vector3.zero, Quaternion.identity);
-                ReturnObjectToPool(newObject);
+                InstantiateNewPoolObject();
             }
+        }
+
+        protected void InstantiateNewPoolObject() {
+            T newObject = Instantiate(ObjectPrefab, Vector3.zero, Quaternion.identity);
+            ReturnObjectToPool(newObject);
         }
 
         public virtual void ReturnObjectToPool(T objectDespawned) {
@@ -30,12 +37,24 @@ namespace Toblerone.Toolbox {
         }
 
         public virtual T InstantiateObject(Vector3 position, Quaternion rotation) {
+            if (objectQueue.Count <= 0)
+                ExpandPool();
             T instantiatedObject = objectQueue.Dequeue();
             GameObject newObj = instantiatedObject.gameObject;
             newObj.transform.SetPositionAndRotation(position, rotation);
             newObj.SetActive(true);
             instantiatedObject.InitObject();
             return instantiatedObject;
+        }
+
+        protected void ExpandPool() {
+            if (expandOneByOne) {
+                InstantiateNewPoolObject();
+                poolSize++;
+            } else {
+                BuildPool();
+                poolSize += poolSize;
+            }
         }
 
         protected virtual void OnEnable() {

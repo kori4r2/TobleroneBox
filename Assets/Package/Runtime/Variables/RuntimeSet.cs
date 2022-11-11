@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public abstract class RuntimeSet<T> : ScriptableObject, IEnumerable<T> where T : MonoBehaviour {
-        private Dictionary<GameObject, T> activeObjsDictionary = new Dictionary<GameObject, T>();
-        private HashSet<T> activeObjectsHashSet = new HashSet<T>();
+        protected Dictionary<GameObject, T> activeObjsDictionary = new Dictionary<GameObject, T>();
+        protected HashSet<T> activeObjectsHashSet = new HashSet<T>();
 
         public int Count => activeObjectsHashSet.Count;
 

@@ -5,7 +5,7 @@ namespace Toblerone.Toolbox {
     public class Movable2D {
         [SerializeField] private Rigidbody2D movableRigidbody = null;
         public bool IsMoving => CanMove && movableRigidbody.velocity.magnitude > Mathf.Epsilon;
-        private bool CanMove => movableRigidbody.bodyType != RigidbodyType2D.Static;
+        public bool CanMove => movableRigidbody.bodyType != RigidbodyType2D.Static;
         private bool shouldUpdateVelocity = false;
         private Vector2 currentVelocity = Vector2.zero;
 

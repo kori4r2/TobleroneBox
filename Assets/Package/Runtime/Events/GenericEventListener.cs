@@ -4,8 +4,8 @@ using UnityEngine.Events;
 namespace Toblerone.Toolbox {
     [System.Serializable]
     public class GenericEventListener<T> : IGenericEventListener<T> {
-        [SerializeField] private GenericEvent<T> eventListened = null;
-        [SerializeField] private UnityEvent<T> eventCallback = new UnityEvent<T>();
+        [SerializeField] protected GenericEvent<T> eventListened = null;
+        [SerializeField] protected UnityEvent<T> eventCallback = new UnityEvent<T>();
 
         public GenericEventListener(GenericEvent<T> eventToListen, UnityAction<T> response) {
             eventListened = eventToListen;
