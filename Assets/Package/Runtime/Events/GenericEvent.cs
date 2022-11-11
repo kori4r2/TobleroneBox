@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public abstract class GenericEvent<T> : ScriptableObject {
-        [SerializeField] private T debugValue;
-        private List<IGenericEventListener<T>> listeners = new List<IGenericEventListener<T>>();
+        [SerializeField] protected T debugValue;
+        protected List<IGenericEventListener<T>> listeners = new List<IGenericEventListener<T>>();
 
         public void AddListener(IGenericEventListener<T> newListener) {
             if (!listeners.Contains(newListener)) {

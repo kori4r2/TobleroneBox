@@ -26,23 +26,7 @@ namespace Toblerone.Toolbox {
         private EventListener cameraChangeEventListener;
 
         private void Awake() {
-            cameraChangeEventListener = new EventListener(cameraChangeEvent, OnCameraChange);
-        }
-
-        private void OnCameraChange() {
-            UpdateBounds();
-        }
-
-        private void OnEnable() {
-            cameraChangeEventListener?.StartListeningEvent();
-        }
-
-        private void OnDisable() {
-            cameraChangeEventListener?.StopListeningEvent();
-        }
-
-        private void Start() {
-            UpdateBounds();
+            cameraChangeEventListener = new EventListener(cameraChangeEvent, UpdateBounds);
         }
 
         private void UpdateBounds() {
@@ -70,6 +54,18 @@ namespace Toblerone.Toolbox {
                 newPoints[index] *= worldSpaceLimits / 2f;
             }
             return newPoints;
+        }
+
+        private void OnEnable() {
+            cameraChangeEventListener?.StartListeningEvent();
+        }
+
+        private void OnDisable() {
+            cameraChangeEventListener?.StopListeningEvent();
+        }
+
+        private void Start() {
+            UpdateBounds();
         }
     }
 }
