@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public class ScenePicker : MonoBehaviour {
+    public class ScenePicker {
         [SerializeField] private string sceneName = "";
         [SerializeField] private string assetPath = "";
         [SerializeField] private string guid = "";
