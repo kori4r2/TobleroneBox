@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
+    [Serializable]
     public class ScenePicker {
         [SerializeField] private string sceneName = "";
         [SerializeField] private string assetPath = "";
