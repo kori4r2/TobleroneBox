@@ -14,7 +14,13 @@ namespace Toblerone.Toolbox {
             }
         }
 
-        protected void NotifyObservers() {
+        public void CopyValue(GenericVariable<T> otherVariable) {
+            if (!otherVariable)
+                return;
+            Value = otherVariable.Value;
+        }
+
+        public void NotifyObservers() {
             foreach (IVariableObserver<T> observer in observers) {
                 if (observer != null)
                     observer.OnValueChanged(Value);

@@ -1,11 +1,18 @@
 {
 	"name": "com.toblerone.toolbox",
-	"version": "1.2.1",
+	"version": "1.3.0",
 	"displayName": "TobleroneBox",
 	"description": "Just a personal toolbox with things that can make development easier",
 	"unity": "2020.3",
 	"dependencies": {
-		"com.unity.inputsystem": "1.0.2"
+		"com.unity.inputsystem": "1.0.2",
+		"com.unity.textmeshpro": "3.0.6"
 	},
-	"samples": []
+	"samples": [
+		{
+			"displayName": "Examples",
+			"description": "A few basic examples of how to use custom Events and Variables",
+			"path": "Samples~/Examples"
+		}
+	]
 }
