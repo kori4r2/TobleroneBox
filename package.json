@@ -7,5 +7,11 @@
 	"dependencies": {
 		"com.unity.inputsystem": "1.0.2"
 	},
-	"samples": []
+	"samples": [
+		{
+			"displayName": "Examples",
+			"description": "A few basic examples of how to use custom Events and Variables",
+			"path": "Samples~/Examples"
+		}
+	]
 }
