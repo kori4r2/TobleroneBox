@@ -35,6 +35,20 @@ namespace Toblerone.Toolbox.EditorScripts {
             return rect;
         }
 
+        public static void DrawScriptField(Object editorTarget) {
+            using (new EditorGUI.DisabledScope(true)) {
+                MonoScript monoScript = GetMonoScript(editorTarget);
+                EditorGUILayout.ObjectField("Script", monoScript, editorTarget.GetType(), false);
+            }
+        }
+
+        private static MonoScript GetMonoScript(Object editorTarget) {
+            if ((editorTarget as MonoBehaviour) != null)
+                return MonoScript.FromMonoBehaviour((MonoBehaviour)editorTarget);
+            else
+                return MonoScript.FromScriptableObject((ScriptableObject)editorTarget);
+        }
+
         [MenuItem("Assets/TobleroneBox/Set Selection as Dirty", false)]
         private static void SetSelectionDirty() {
             foreach (Object obj in Selection.objects) {
