@@ -3,43 +3,44 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox {
     public class UpdateManager : MonoBehaviour {
-        private static UpdateManager instance;
-        public static UpdateManager Instance {
+        private static UpdateManager instance = null;
+        private static UpdateManager Instance {
             get {
                 if (instance)
                     return instance;
                 GameObject emptyObject = new GameObject("UpdateManager");
+                emptyObject.transform.SetParent(null);
                 instance = emptyObject.AddComponent<UpdateManager>();
                 return instance;
             }
-            private set => instance = value;
         }
+        [SerializeField] private bool persistOnSceneChange = false;
         private HashSet<ManagedMonoBehaviour> behaviours = new HashSet<ManagedMonoBehaviour>();
         private ManagedMonoBehaviour[] behavioursArray;
         private bool hashSetAltered = true;
 
         private void Awake() {
-            if (Instance != null) {
+            if (instance != null) {
                 Destroy(this);
                 return;
             }
-
-            Instance = this;
-            DontDestroyOnLoad(this);
+            if (persistOnSceneChange)
+                DontDestroyOnLoad(this);
+            instance = this;
         }
 
-        public void AddBehaviour(ManagedMonoBehaviour newBehaviour) {
-            if (behaviours.Contains(newBehaviour))
+        public static void AddBehaviour(ManagedMonoBehaviour newBehaviour) {
+            if (Instance.behaviours.Contains(newBehaviour))
                 return;
-            behaviours.Add(newBehaviour);
-            hashSetAltered = true;
+            Instance.behaviours.Add(newBehaviour);
+            Instance.hashSetAltered = true;
         }
 
-        public void RemoveBehaviour(ManagedMonoBehaviour newBehaviour) {
-            if (!behaviours.Contains(newBehaviour))
+        public static void RemoveBehaviour(ManagedMonoBehaviour newBehaviour) {
+            if (!instance || !Instance.behaviours.Contains(newBehaviour))
                 return;
-            behaviours.Remove(newBehaviour);
-            hashSetAltered = true;
+            Instance.behaviours.Remove(newBehaviour);
+            Instance.hashSetAltered = true;
         }
 
         private void Update() {
