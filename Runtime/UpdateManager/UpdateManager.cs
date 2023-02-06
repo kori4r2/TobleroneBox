@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toblerone.Toolbox {
     public class UpdateManager : MonoBehaviour {
         private static UpdateManager instance = null;
-        private static UpdateManager Instance {
+        public static UpdateManager Instance {
             get {
                 if (instance)
                     return instance;
