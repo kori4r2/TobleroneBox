@@ -8,9 +8,19 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
         [SerializeField] private float maxObjects = 1000f;
         [SerializeField] private float spawnRange = 100f;
         [SerializeField, Range(0.1f, 10)] private float secondsBetweenSpawns = 1f;
+        [SerializeField] private bool spawnInstantly = false;
 
         private int objectCount = 0;
         private float timer = 0;
+
+        private void Start() {
+            if (!spawnInstantly)
+                return;
+
+            while (objectCount < maxObjects) {
+                InstantiateNewObject();
+            }
+        }
 
         private void Update() {
             if (objectCount >= maxObjects)
