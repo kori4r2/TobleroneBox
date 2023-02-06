@@ -9,11 +9,11 @@ namespace Toblerone.Toolbox {
         public abstract void ManagedUpdate();
 
         protected virtual void Awake() {
-            UpdateManager.Instance.AddBehaviour(this);
+            UpdateManager.AddBehaviour(this);
         }
 
         protected virtual void OnDestroy() {
-            UpdateManager.Instance.RemoveBehaviour(this);
+            UpdateManager.RemoveBehaviour(this);
         }
 
         protected virtual void OnEnable() {
