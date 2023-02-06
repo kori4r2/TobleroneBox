@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox.UpdateManagerSample {
@@ -7,8 +5,9 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
         [SerializeField] private SpinningObject prefab;
         [SerializeField] private float maxObjects = 1000f;
         [SerializeField] private float spawnRange = 100f;
-        [SerializeField, Range(0.1f, 10)] private float secondsBetweenSpawns = 1f;
+        [SerializeField, Range(0.01f, 10)] private float secondsBetweenSpawns = 1f;
         [SerializeField] private bool spawnInstantly = false;
+        [SerializeField] private bool objectsSpinOnSpawn = true;
 
         private int objectCount = 0;
         private float timer = 0;
@@ -17,6 +16,10 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
             if (!spawnInstantly)
                 return;
 
+            SpawnMaxObjects();
+        }
+
+        public void SpawnMaxObjects() {
             while (objectCount < maxObjects) {
                 InstantiateNewObject();
             }
@@ -36,11 +39,19 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
             if (objectCount >= maxObjects)
                 return;
             objectCount++;
-            Instantiate(prefab, CalculateNewPosition(), Quaternion.identity, transform);
+            SpinningObject newObj = Instantiate(prefab, CalculateNewPosition(), Quaternion.identity, transform);
+            if (objectsSpinOnSpawn)
+                newObj.StartSpinning();
+            else
+                newObj.StopSpinning();
         }
 
         private Vector3 CalculateNewPosition() {
             return Random.insideUnitSphere * spawnRange;
+        }
+
+        public void ToggleUpdateManager() {
+            UpdateManager.Instance.gameObject.SetActive(!UpdateManager.Instance.gameObject.activeSelf);
         }
     }
 }
