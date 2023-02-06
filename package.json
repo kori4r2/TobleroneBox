@@ -13,6 +13,11 @@
 			"displayName": "Examples",
 			"description": "A few basic examples of how to use custom Events and Variables",
 			"path": "Samples~/Examples"
+		},
+		{
+			"displayName": "Update Manager",
+			"description": "A couple of simple scenes showcasing how to use the custom Update Manager",
+			"path": "Samples~/UpdateManager"
 		}
 	]
 }
