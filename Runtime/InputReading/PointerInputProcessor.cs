@@ -69,7 +69,7 @@ namespace Toblerone.Toolbox {
         private void OnMovePointer(InputAction.CallbackContext context) {
             Vector2 actionValue = context.ReadValue<Vector2>();
             UpdatePointerPosition(actionValue);
-            OnMove?.Invoke(pointerPosition);
+            onMove?.Invoke(pointerPosition);
         }
 
         private void UpdatePointerPosition(Vector2 actionValue) {
