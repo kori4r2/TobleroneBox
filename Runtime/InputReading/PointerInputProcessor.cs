@@ -75,7 +75,7 @@ namespace Toblerone.Toolbox {
         private void UpdatePointerPosition(Vector2 actionValue) {
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
             Vector2 screenPosition = ClampVector2(actionValue, Vector2.zero, screenSize);
-            pointerPosition = MainCamera.ScreenToWorldPoint(screenPosition);
+            pointerPosition = MainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, MainCamera.nearClipPlane));
         }
 
         private static Vector2 ClampVector2(Vector2 value, Vector2 minValue, Vector2 maxValue) {
