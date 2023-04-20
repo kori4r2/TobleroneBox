@@ -15,7 +15,14 @@ namespace Toblerone.Toolbox {
 
         protected virtual void Awake() {
             BuildPool();
+            if (reference)
+                reference.Value = this;
             despawnedObjectEventListener = new GenericEventListener<T>(DespawnedObjectEvent, ReturnObjectToPool);
+        }
+
+        protected virtual void OnDestroy() {
+            if (reference && reference.Value == this)
+                reference.Value = null;
         }
 
         protected virtual void BuildPool() {
