@@ -19,6 +19,7 @@ namespace Toblerone.Toolbox.EditorScripts {
                 EditorUtility.SetDirty(scriptableObject);
             }
             AssetDatabase.SaveAssets();
+            Debug.Log("UpdateAllScriptableObjects run finished");
         }
 
         private static void UpdateAllPrefabs() {
