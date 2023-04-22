@@ -19,7 +19,7 @@ namespace Toblerone.Toolbox {
         }
 
         public void Raise(T value) {
-            foreach (IGenericEventListener<T> listener in listeners) {
+            foreach (IGenericEventListener<T> listener in listeners.ToArray()) {
                 if (listener != null)
                     listener.OnEventRaised(value);
             }
