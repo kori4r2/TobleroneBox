@@ -21,7 +21,7 @@ namespace Toblerone.Toolbox {
         }
 
         public void NotifyObservers() {
-            foreach (IVariableObserver<T> observer in observers) {
+            foreach (IVariableObserver<T> observer in observers.ToArray()) {
                 if (observer != null)
                     observer.OnValueChanged(Value);
             }
