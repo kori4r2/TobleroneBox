@@ -17,6 +17,8 @@ namespace Toblerone.Toolbox {
         public UnityEvent OnPress => onPress;
         [SerializeField] private UnityEvent onRelease = new UnityEvent();
         public UnityEvent OnRelease => onRelease;
+        [SerializeField] private UnityEvent<Vector2> onMove = new UnityEvent<Vector2>();
+        public UnityEvent<Vector2> OnMove => onMove;
         private Camera mainCamera = null;
         public Camera MainCamera {
             get {
@@ -67,12 +69,13 @@ namespace Toblerone.Toolbox {
         private void OnMovePointer(InputAction.CallbackContext context) {
             Vector2 actionValue = context.ReadValue<Vector2>();
             UpdatePointerPosition(actionValue);
+            onMove?.Invoke(pointerPosition);
         }
 
         private void UpdatePointerPosition(Vector2 actionValue) {
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
             Vector2 screenPosition = ClampVector2(actionValue, Vector2.zero, screenSize);
-            pointerPosition = MainCamera.ScreenToWorldPoint(screenPosition);
+            pointerPosition = MainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, MainCamera.nearClipPlane));
         }
 
         private static Vector2 ClampVector2(Vector2 value, Vector2 minValue, Vector2 maxValue) {
