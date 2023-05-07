@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,7 +31,8 @@ namespace Toblerone.Toolbox.SceneManagement {
             set => currentMainScene = value;
         }
 
-        private static SceneChangeController sceneChangeController;
+        private static HashSet<SceneTransitionInfo> activatedTransitionScenes = new HashSet<SceneTransitionInfo>();
+        private static SceneTransitionsList sceneTransitions = new SceneTransitionsList();
         public static bool IsChangingScene { get; private set; } = false;
 
         public static void LoadMainScene(SceneLoader sceneLoader) {
@@ -41,9 +41,13 @@ namespace Toblerone.Toolbox.SceneManagement {
                 return;
             }
             IsChangingScene = true;
+            sceneTransitions.ActivateSceneTransition(sceneLoader, SwitchToNewMainScene);
+        }
+
+        private static void SwitchToNewMainScene(AsyncOperation loadingSceneLoadOperation, SceneLoader sceneLoader) {
             AsyncOperation unloadOperation = UnloadExistingSceneAsync(CurrentMainScene);
             unloadOperation.completed += op => LoadNewMainSceneAsync(op, sceneLoader);
-            sceneLoader.SceneChangeController.Value.ManageSceneUnloadOperation(unloadOperation);
+            sceneLoader.SceneChangeController.ManageSceneUnloadOperation(unloadOperation);
         }
 
         private static AsyncOperation UnloadExistingSceneAsync(string scenePath) {
@@ -59,7 +63,7 @@ namespace Toblerone.Toolbox.SceneManagement {
         private static void LoadNewMainSceneAsync(AsyncOperation unloadOperation, SceneLoader sceneLoader) {
             AsyncOperation loadOperation = sceneLoader.LoadSceneAsync();
             loadOperation.completed += op => UpdateNewMainSceneStatus(op, sceneLoader);
-            sceneLoader.SceneChangeController.Value.ManageSceneLoadOperation(loadOperation);
+            sceneLoader.SceneChangeController.ManageSceneLoadOperation(loadOperation);
         }
 
         private static void UpdateNewMainSceneStatus(AsyncOperation loadOperation, SceneLoader newMainScene) {
@@ -74,12 +78,16 @@ namespace Toblerone.Toolbox.SceneManagement {
                 return;
             }
             IsChangingScene = true;
-            AsyncOperation loadOperation = sceneLoader.LoadSceneAsync();
-            loadOperation.completed += op => FinishedAdditionalSceneLoad(op, sceneLoader);
-            sceneLoader.SceneChangeController.Value.ManageSceneLoadOperation(loadOperation);
+            sceneTransitions.ActivateSceneTransition(sceneLoader, LoadNewSceneAdditive);
         }
 
-        private static void FinishedAdditionalSceneLoad(AsyncOperation loadOperation, SceneLoader newAdditionalScene) {
+        private static void LoadNewSceneAdditive(AsyncOperation loadingSceneLoadOperation, SceneLoader newAdditionalScene) {
+            AsyncOperation loadOperation = newAdditionalScene.LoadSceneAsync();
+            loadOperation.completed += op => FinishedAdditiveSceneLoad(op, newAdditionalScene);
+            newAdditionalScene.SceneChangeController.ManageSceneLoadOperation(loadOperation);
+        }
+
+        private static void FinishedAdditiveSceneLoad(AsyncOperation loadOperation, SceneLoader newAdditionalScene) {
             ScenesLoaded.Add(newAdditionalScene.ScenePath, newAdditionalScene);
             IsChangingScene = false;
         }
@@ -94,10 +102,14 @@ namespace Toblerone.Toolbox.SceneManagement {
                 return;
             }
             IsChangingScene = true;
-            AsyncOperation unloadOperation = sceneLoader.UnloadSceneAsync();
+            sceneTransitions.ActivateSceneTransition(sceneLoader, UnloadSceneAdditive);
+        }
+
+        private static void UnloadSceneAdditive(AsyncOperation loadingSceneLoadOperation, SceneLoader unloadedScene) {
+            AsyncOperation unloadOperation = unloadedScene.UnloadSceneAsync();
             unloadOperation.completed += _ => IsChangingScene = false;
-            ScenesLoaded.Remove(sceneLoader.ScenePath);
-            sceneLoader.SceneChangeController.Value.ManageSceneUnloadOperation(unloadOperation);
+            ScenesLoaded.Remove(unloadedScene.ScenePath);
+            unloadedScene.SceneChangeController.ManageSceneUnloadOperation(unloadOperation);
         }
     }
 }
