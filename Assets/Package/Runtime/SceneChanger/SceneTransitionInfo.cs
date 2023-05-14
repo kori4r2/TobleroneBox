@@ -1,14 +1,24 @@
-using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-namespace Toblerone.Toolbox {
+namespace Toblerone.Toolbox.SceneManagement {
     [CreateAssetMenu(menuName = "TobleroneBox/SceneChanger/SceneTransitionInfo")]
     public class SceneTransitionInfo : ScriptableObject {
         [SerializeField] private ScenePicker transitionScene;
         [SerializeField] private SceneChangeControllerVariable sceneChangeController;
-        public GenericVariable<SceneChangeController> SceneChangeController => sceneChangeController;
+        public SceneChangeControllerVariable SceneChangeController => sceneChangeController;
+        private Scene? loadedScene = null;
+        public Scene LoadedScene {
+            get {
+                if (loadedScene == null) {
+                    loadedScene = SceneManager.GetSceneByPath(transitionScene.Path);
+                }
+                return loadedScene.Value;
+            }
+        }
+
         public AsyncOperation LoadSceneAsync() {
-            throw new NotImplementedException();
+            return SceneManager.LoadSceneAsync(transitionScene.Path);
         }
     }
 }

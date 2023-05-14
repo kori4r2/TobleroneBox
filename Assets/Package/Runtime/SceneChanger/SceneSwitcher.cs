@@ -31,7 +31,6 @@ namespace Toblerone.Toolbox.SceneManagement {
             set => currentMainScene = value;
         }
 
-        private static HashSet<SceneTransitionInfo> activatedTransitionScenes = new HashSet<SceneTransitionInfo>();
         private static SceneTransitionsList sceneTransitions = new SceneTransitionsList();
         public static bool IsChangingScene { get; private set; } = false;
 
@@ -45,7 +44,11 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         private static void SwitchToNewMainScene(AsyncOperation loadingSceneLoadOperation, SceneLoader sceneLoader) {
+            Debug.Log($"Current active scene = {SceneManager.GetActiveScene().path}");
+            SceneManager.SetActiveScene(sceneLoader.SceneTransitionInfo.LoadedScene);
+            Debug.Log($"Current active scene = {SceneManager.GetActiveScene().path}");
             AsyncOperation unloadOperation = UnloadExistingSceneAsync(CurrentMainScene);
+            Debug.Log(unloadOperation);
             unloadOperation.completed += op => LoadNewMainSceneAsync(op, sceneLoader);
             sceneLoader.SceneChangeController.ManageSceneUnloadOperation(unloadOperation);
         }
