@@ -8,16 +8,7 @@ namespace Toblerone.Toolbox.SceneManagement {
         public SceneTransitionInfo SceneTransitionInfo => sceneTransitionInfo;
         [SerializeField] private ScenePicker unityScene;
         public string ScenePath => unityScene.Path;
-        private Scene? loadedScene = null;
-        public Scene LoadedScene {
-            get {
-                if (loadedScene == null) {
-                    loadedScene = SceneManager.GetSceneByPath(ScenePath);
-                }
-                return loadedScene.Value;
-            }
-        }
-        public SceneChangeController SceneChangeController => sceneTransitionInfo.SceneChangeController.Value;
+        public Scene LoadedScene => SceneManager.GetSceneByPath(ScenePath);
 
         public void LoadAsMainScene() {
             SceneSwitcher.LoadMainScene(this);
