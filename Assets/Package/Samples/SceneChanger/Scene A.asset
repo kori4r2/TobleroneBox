@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scene A
   m_EditorClassIdentifier: 
   sceneTransitionInfo: {fileID: 11400000, guid: fae3a95023570fe66b8bbb1bc2583f08, type: 2}
-  transitionScene:
+  unityScene:
     sceneName: Scene A
     assetPath: Assets/Package/Samples/SceneChanger/Scene A.unity
     guid: ece77299af14ac59eba7d2ee31646ede
