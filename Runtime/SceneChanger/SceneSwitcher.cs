@@ -44,17 +44,17 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         private static void SwitchToNewMainScene(AsyncOperation loadingSceneLoadOperation, SceneLoader sceneLoader) {
+            string previousMainScene = CurrentMainScene;
             SceneManager.SetActiveScene(sceneLoader.SceneTransitionInfo.LoadedScene);
-            AsyncOperation unloadOperation = UnloadExistingSceneAsync(CurrentMainScene);
-            Debug.Log(unloadOperation);
+            AsyncOperation unloadOperation = UnloadExistingSceneAsync(previousMainScene);
             unloadOperation.completed += op => LoadNewMainSceneAsync(op, sceneLoader);
-            sceneLoader.SceneChangeController.ManageSceneUnloadOperation(unloadOperation);
+            sceneLoader.SceneTransitionInfo.StartTransition(unloadOperation);
         }
 
         private static AsyncOperation UnloadExistingSceneAsync(string scenePath) {
             AsyncOperation unloadOperation;
             if (ScenesLoaded[scenePath] != null)
-                unloadOperation = scenesLoaded[scenePath].UnloadSceneAsync();
+                unloadOperation = ScenesLoaded[scenePath].UnloadSceneAsync();
             else
                 unloadOperation = SceneManager.UnloadSceneAsync(scenePath);
             scenesLoaded.Remove(scenePath);
@@ -64,12 +64,14 @@ namespace Toblerone.Toolbox.SceneManagement {
         private static void LoadNewMainSceneAsync(AsyncOperation unloadOperation, SceneLoader sceneLoader) {
             AsyncOperation loadOperation = sceneLoader.LoadSceneAsync();
             loadOperation.completed += op => UpdateNewMainSceneStatus(op, sceneLoader);
-            sceneLoader.SceneChangeController.ManageSceneLoadOperation(loadOperation);
+            sceneLoader.SceneTransitionInfo.StartTransition(loadOperation);
         }
 
         private static void UpdateNewMainSceneStatus(AsyncOperation loadOperation, SceneLoader newMainScene) {
             CurrentMainScene = newMainScene.ScenePath;
+            SceneManager.SetActiveScene(newMainScene.LoadedScene);
             ScenesLoaded.Add(newMainScene.ScenePath, newMainScene);
+            newMainScene.SceneTransitionInfo.EndTransition();
             IsChangingScene = false;
         }
 
@@ -85,11 +87,12 @@ namespace Toblerone.Toolbox.SceneManagement {
         private static void LoadNewSceneAdditive(AsyncOperation loadingSceneLoadOperation, SceneLoader newAdditionalScene) {
             AsyncOperation loadOperation = newAdditionalScene.LoadSceneAsync();
             loadOperation.completed += op => FinishedAdditiveSceneLoad(op, newAdditionalScene);
-            newAdditionalScene.SceneChangeController.ManageSceneLoadOperation(loadOperation);
+            newAdditionalScene.SceneTransitionInfo.StartTransition(loadOperation);
         }
 
         private static void FinishedAdditiveSceneLoad(AsyncOperation loadOperation, SceneLoader newAdditionalScene) {
             ScenesLoaded.Add(newAdditionalScene.ScenePath, newAdditionalScene);
+            newAdditionalScene.SceneTransitionInfo.EndTransition();
             IsChangingScene = false;
         }
 
@@ -108,9 +111,14 @@ namespace Toblerone.Toolbox.SceneManagement {
 
         private static void UnloadSceneAdditive(AsyncOperation loadingSceneLoadOperation, SceneLoader unloadedScene) {
             AsyncOperation unloadOperation = unloadedScene.UnloadSceneAsync();
-            unloadOperation.completed += _ => IsChangingScene = false;
+            unloadOperation.completed += _ => FinishedAdditiveSceneUnload(unloadedScene);
             ScenesLoaded.Remove(unloadedScene.ScenePath);
-            unloadedScene.SceneChangeController.ManageSceneUnloadOperation(unloadOperation);
+            unloadedScene.SceneTransitionInfo.StartTransition(unloadOperation);
+        }
+
+        private static void FinishedAdditiveSceneUnload(SceneLoader unloadedScene) {
+            unloadedScene.SceneTransitionInfo.EndTransition();
+            IsChangingScene = false;
         }
     }
 }
