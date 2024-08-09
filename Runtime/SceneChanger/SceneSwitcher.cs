@@ -44,9 +44,7 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         private static void SwitchToNewMainScene(AsyncOperation loadingSceneLoadOperation, SceneLoader sceneLoader) {
-            Debug.Log($"Current active scene = {SceneManager.GetActiveScene().path}");
             SceneManager.SetActiveScene(sceneLoader.SceneTransitionInfo.LoadedScene);
-            Debug.Log($"Current active scene = {SceneManager.GetActiveScene().path}");
             AsyncOperation unloadOperation = UnloadExistingSceneAsync(CurrentMainScene);
             Debug.Log(unloadOperation);
             unloadOperation.completed += op => LoadNewMainSceneAsync(op, sceneLoader);

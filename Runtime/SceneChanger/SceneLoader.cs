@@ -6,8 +6,8 @@ namespace Toblerone.Toolbox.SceneManagement {
     public class SceneLoader : ScriptableObject {
         [SerializeField] private SceneTransitionInfo sceneTransitionInfo;
         public SceneTransitionInfo SceneTransitionInfo => sceneTransitionInfo;
-        [SerializeField] private ScenePicker transitionScene;
-        public string ScenePath => transitionScene.Path;
+        [SerializeField] private ScenePicker unityScene;
+        public string ScenePath => unityScene.Path;
         private Scene? loadedScene = null;
         public Scene LoadedScene {
             get {
@@ -32,11 +32,11 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         public AsyncOperation LoadSceneAsync() {
-            return SceneManager.LoadSceneAsync(ScenePath);
+            return SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive);
         }
 
         public AsyncOperation UnloadSceneAsync() {
-            return SceneManager.LoadSceneAsync(ScenePath);
+            return SceneManager.UnloadSceneAsync(ScenePath);
         }
     }
 }

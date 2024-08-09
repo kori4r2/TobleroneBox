@@ -18,7 +18,7 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         public AsyncOperation LoadSceneAsync() {
-            return SceneManager.LoadSceneAsync(transitionScene.Path);
+            return SceneManager.LoadSceneAsync(transitionScene.Path, LoadSceneMode.Additive);
         }
     }
 }
