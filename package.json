@@ -6,7 +6,7 @@
 	"unity": "2020.3",
 	"dependencies": {
 		"com.unity.inputsystem": "1.0.2",
-		"com.unity.textmeshpro": "3.0.6",
+		"com.unity.textmeshpro": "3.0.9",
 		"com.unity.addressables": "1.16.19"
 	},
 	"samples": [
