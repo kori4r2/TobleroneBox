@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 668e7f679ff87e4499ebd1e7bb5343ad, type: 3}
-  m_Name: Scene B
+  m_Name: Additive Scene 1
   m_EditorClassIdentifier: 
-  sceneTransitionInfo: {fileID: 11400000, guid: fae3a95023570fe66b8bbb1bc2583f08, type: 2}
+  sceneTransitionInfo: {fileID: 11400000, guid: 4a844880951ed5d4a82853025d69b12a, type: 2}
   unityScene:
-    sceneName: Scene B
-    assetPath: Assets/Package/Samples/SceneChanger/Scene B.unity
-    guid: b69aea250cda0c3ed8e6407a5be89491
+    sceneName: Additive Scene 1
+    assetPath: Assets/Package/Samples/SceneChanger/AdditiveScene1/Additive Scene
+      1.unity
+    guid: 8297f56b14dca8440a52f993c094235e
