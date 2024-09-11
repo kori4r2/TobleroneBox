@@ -5,13 +5,7 @@ using UnityEngine.SceneManagement;
 namespace Toblerone.Toolbox.SceneManagement {
     public static class SceneSwitcher {
         private static Dictionary<string, SceneLoader> scenesLoaded = null;
-        private static Dictionary<string, SceneLoader> ScenesLoaded {
-            get {
-                if (scenesLoaded == null)
-                    CreateScenesLoadedDictionary();
-                return scenesLoaded;
-            }
-        }
+        private static Dictionary<string, SceneLoader> ScenesLoaded => scenesLoaded;
 
         private static void CreateScenesLoadedDictionary() {
             scenesLoaded = new Dictionary<string, SceneLoader>();
@@ -22,13 +16,12 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         private static string currentMainScene = null;
-        private static string CurrentMainScene {
-            get {
-                if (currentMainScene == null)
-                    currentMainScene = SceneManager.GetActiveScene().path;
-                return currentMainScene;
-            }
-            set => currentMainScene = value;
+
+        private static void InitVariables() {
+            if (scenesLoaded != null && currentMainScene != null)
+                return;
+            CreateScenesLoadedDictionary();
+            currentMainScene = SceneManager.GetActiveScene().path;
         }
 
         private static SceneTransitionsList sceneTransitions = new SceneTransitionsList();
@@ -39,12 +32,13 @@ namespace Toblerone.Toolbox.SceneManagement {
                 Debug.LogError($"[SceneSwitcher] Tried to switch scene to {sceneLoader.ScenePath} before another operation finished");
                 return;
             }
+            InitVariables();
             IsChangingScene = true;
             sceneTransitions.ActivateSceneTransition(sceneLoader, SwitchToNewMainScene);
         }
 
         private static void SwitchToNewMainScene(AsyncOperation loadingSceneLoadOperation, SceneLoader sceneLoader) {
-            string previousMainScene = CurrentMainScene;
+            string previousMainScene = currentMainScene;
             SceneManager.SetActiveScene(sceneLoader.SceneTransitionInfo.LoadedScene);
             AsyncOperation unloadOperation = UnloadExistingSceneAsync(previousMainScene);
             unloadOperation.completed += op => LoadNewMainSceneAsync(op, sceneLoader);
@@ -68,7 +62,7 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         private static void UpdateNewMainSceneStatus(AsyncOperation loadOperation, SceneLoader newMainScene) {
-            CurrentMainScene = newMainScene.ScenePath;
+            currentMainScene = newMainScene.ScenePath;
             SceneManager.SetActiveScene(newMainScene.LoadedScene);
             ScenesLoaded.Add(newMainScene.ScenePath, newMainScene);
             newMainScene.SceneTransitionInfo.EndTransition();
@@ -80,6 +74,11 @@ namespace Toblerone.Toolbox.SceneManagement {
                 Debug.LogError($"[SceneSwitcher] Tried to add scene {sceneLoader.ScenePath} before another operation finished");
                 return;
             }
+            if (ScenesLoaded.ContainsKey(sceneLoader.ScenePath)) {
+                Debug.LogError($"[SceneSwitcher] Tried to load additive scene {sceneLoader.ScenePath} that is already loaded");
+                return;
+            }
+            InitVariables();
             IsChangingScene = true;
             sceneTransitions.ActivateSceneTransition(sceneLoader, LoadNewSceneAdditive);
         }
@@ -105,6 +104,7 @@ namespace Toblerone.Toolbox.SceneManagement {
                 Debug.LogError($"[SceneSwitcher] Tried to unload scene {sceneLoader.ScenePath} that hasn't been loaded yet");
                 return;
             }
+            InitVariables();
             IsChangingScene = true;
             sceneTransitions.ActivateSceneTransition(sceneLoader, UnloadSceneAdditive);
         }
