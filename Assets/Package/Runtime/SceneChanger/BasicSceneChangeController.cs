@@ -23,7 +23,8 @@ namespace Toblerone.Toolbox.SceneManagement {
         private void ResetParameters() {
             isActive = false;
             showProgress = false;
-            fillImage.fillAmount = 0;
+            if (fillImage)
+                fillImage.fillAmount = 0;
             currentLoadOperation = null;
         }
 
@@ -31,7 +32,8 @@ namespace Toblerone.Toolbox.SceneManagement {
             if (!isActive || currentLoadOperation == null)
                 return;
 
-            fillImage.fillAmount = showProgress ? currentLoadOperation.progress / 0.9f : 0;
+            if (fillImage)
+                fillImage.fillAmount = showProgress ? currentLoadOperation.progress / 0.9f : 0;
         }
 
         public override void Activate() {

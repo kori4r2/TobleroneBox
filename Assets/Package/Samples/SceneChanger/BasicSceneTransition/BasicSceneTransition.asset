@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionScene:
     sceneName: SceneLoading
-    assetPath: Assets/Package/Samples/SceneChanger/SceneLoading.unity
+    assetPath: Assets/Package/Samples/SceneChanger/BasicSceneTransition/SceneLoading.unity
     guid: 164c33e859306d1bcaef6c38c7c632db
   sceneChangeController: {fileID: 11400000, guid: 0c73cdc21d9eab80fbd90951e8c2e4ee, type: 2}

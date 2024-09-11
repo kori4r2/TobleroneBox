@@ -6,12 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Package/Samples/SceneChanger/Scene A.unity
+    path: Assets/Package/Samples/SceneChanger/SceneA/Scene A.unity
     guid: ece77299af14ac59eba7d2ee31646ede
   - enabled: 1
-    path: Assets/Package/Samples/SceneChanger/Scene B.unity
+    path: Assets/Package/Samples/SceneChanger/SceneB/Scene B.unity
     guid: b69aea250cda0c3ed8e6407a5be89491
   - enabled: 1
-    path: Assets/Package/Samples/SceneChanger/SceneLoading.unity
+    path: Assets/Package/Samples/SceneChanger/BasicSceneTransition/SceneLoading.unity
     guid: 164c33e859306d1bcaef6c38c7c632db
+  - enabled: 1
+    path: Assets/Package/Samples/SceneChanger/AdditiveScene1/Additive Scene 1.unity
+    guid: 8297f56b14dca8440a52f993c094235e
+  - enabled: 1
+    path: Assets/Package/Samples/SceneChanger/AdditiveSceneTransition/AdditiveSceneLoading.unity
+    guid: a32eb0248f486e0448bd79bd240cad62
   m_configObjects: {}
