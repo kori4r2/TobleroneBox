@@ -6,14 +6,14 @@ namespace Toblerone.Toolbox.SceneManagement {
     public class SceneTransitionsList {
         private HashSet<SceneTransitionInfo> activatedTransitionScenes = new HashSet<SceneTransitionInfo>();
 
-        public void ActivateSceneTransition(SceneLoader sceneLoader, UnityAction<AsyncOperation, SceneLoader> SceneChangeCallback) {
+        public void ActivateSceneTransition(SceneLoader sceneLoader, UnityAction<SceneLoader> SceneChangeCallback) {
             if (activatedTransitionScenes.Contains(sceneLoader.SceneTransitionInfo)) {
-                SceneChangeCallback.Invoke(null, sceneLoader);
+                SceneChangeCallback.Invoke(sceneLoader);
                 return;
             }
 
             AsyncOperation loadOperation = sceneLoader.SceneTransitionInfo.LoadSceneAsync();
-            loadOperation.completed += _ => SceneChangeCallback.Invoke(loadOperation, sceneLoader);
+            loadOperation.completed += _ => SceneChangeCallback.Invoke(sceneLoader);
             activatedTransitionScenes.Add(sceneLoader.SceneTransitionInfo);
         }
     }

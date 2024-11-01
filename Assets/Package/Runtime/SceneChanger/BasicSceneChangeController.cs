@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Toblerone.Toolbox.SceneManagement {
@@ -9,15 +10,25 @@ namespace Toblerone.Toolbox.SceneManagement {
         [SerializeField] private SceneChangeControllerVariable reference = null;
         [SerializeField] private Image fillImage = null;
         [SerializeField] private GameObject rootObject = null;
+        [Header("Animation Events")]
+        [SerializeField] private BoolEventSO toggleTransitionAnimation = null;
+        [SerializeField] private EventSO transitionAnimationFinished = null;
+        private EventListener transitionAnimationListener = null;
+        private UnityAction transitionCallback = null;
 
         private void Awake() {
             ResetParameters();
             reference.Value = this;
+            if (transitionAnimationFinished == null || toggleTransitionAnimation == null)
+                return;
+            transitionAnimationListener = new EventListener(transitionAnimationFinished, OnAnimationFinished);
         }
 
         private void OnDestroy() {
             if (reference.Value == this)
                 reference.Value = null;
+            if (transitionAnimationListener != null && transitionAnimationFinished != null)
+                transitionAnimationListener.StopListeningEvent();
         }
 
         private void ResetParameters() {
@@ -36,14 +47,57 @@ namespace Toblerone.Toolbox.SceneManagement {
                 fillImage.fillAmount = showProgress ? currentLoadOperation.progress / 0.9f : 0;
         }
 
-        public override void Activate() {
-            ResetParameters();
-            rootObject.SetActive(true);
+        private void OnAnimationFinished() {
+            transitionAnimationListener.StopListeningEvent();
+            UnityAction callback = transitionCallback;
+            transitionCallback = null;
+            if (isActive) {
+                DeactivateImmediate(callback);
+            } else {
+                ActivateImmediate(callback);
+            }
         }
 
-        public override void Deactivate() {
+        public override void Activate(UnityAction onPrepared) {
+            if (transitionAnimationListener == null) {
+                ActivateImmediate(onPrepared);
+                return;
+            }
+            if (transitionCallback != null) {
+                Debug.Log("[BasicSceneChangeController]: Tried to start animation transition while another is underway");
+                return;
+            }
+            transitionCallback = onPrepared;
+            transitionAnimationListener.StartListeningEvent();
+            toggleTransitionAnimation.Raise(true);
+            return;
+        }
+
+        private void ActivateImmediate(UnityAction onPrepared) {
+            ResetParameters();
+            rootObject.SetActive(true);
+            onPrepared?.Invoke();
+        }
+
+        public override void Deactivate(UnityAction onFinish) {
+            if (transitionAnimationListener == null) {
+                DeactivateImmediate(onFinish);
+                return;
+            }
+            if (transitionCallback != null) {
+                Debug.Log("[BasicSceneChangeController]: Tried to start animation transition while another is underway");
+                return;
+            }
+            transitionCallback = onFinish;
+            transitionAnimationListener.StartListeningEvent();
+            toggleTransitionAnimation.Raise(false);
+            return;
+        }
+
+        private void DeactivateImmediate(UnityAction onFinish) {
             ResetParameters();
             rootObject.SetActive(false);
+            onFinish?.Invoke();
         }
 
         public override void ManageSceneLoadOperation(AsyncOperation loadOperation) {
@@ -54,16 +108,6 @@ namespace Toblerone.Toolbox.SceneManagement {
             currentLoadOperation = loadOperation;
             isActive = true;
             showProgress = true;
-        }
-
-        public override void ManageSceneUnloadOperation(AsyncOperation unloadOperation) {
-            if (isActive) {
-                Debug.LogWarning("[BasicSceneChangeController]: Tried to manage a new unload operation while already active");
-                return;
-            }
-            currentLoadOperation = unloadOperation;
-            isActive = true;
-            showProgress = false;
         }
     }
 }
