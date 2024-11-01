@@ -1,12 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Toblerone.Toolbox.SceneManagement {
     [CreateAssetMenu(menuName = "TobleroneBox/SceneChanger/SceneTransitionInfo")]
-    public class SceneTransitionInfo : ScriptableObject, IVariableObserver<SceneChangeController> {
+    public class SceneTransitionInfo : ScriptableObject {
         [SerializeField] private ScenePicker transitionScene;
         [SerializeField] private SceneChangeControllerVariable sceneChangeController;
         public SceneChangeControllerVariable SceneChangeController => sceneChangeController;
+        private VariableObserver<SceneChangeController> sceneChangeControlerObserver;
         private AsyncOperation pendingOperation = null;
         private Scene? loadedScene = null;
         public Scene LoadedScene {
@@ -18,38 +20,54 @@ namespace Toblerone.Toolbox.SceneManagement {
             }
         }
 
-        public void StartTransition(AsyncOperation operation) {
+        private void Awake() {
+            sceneChangeControlerObserver = new VariableObserver<SceneChangeController>(
+                sceneChangeController,
+                OnChangeControllerUpdated
+            );
+        }
+
+        public void PrepareTransition(UnityAction onPrepared) {
+            if (onPrepared == null) {
+                Debug.LogError($"[SceneTransition]: Transition callback missing for PrepareTransition call");
+                return;
+            }
+            sceneChangeController.Value.Activate(onPrepared);
+        }
+
+        public void ManageTransition(AsyncOperation operation) {
             if (pendingOperation != null) {
                 Debug.LogError($"[SceneTransition]: Tried to start a transition while operation is already pending.");
+                if (sceneChangeController.Value != null)
+                    EndTransition(null);
                 return;
             }
             if (sceneChangeController.Value != null) {
-                sceneChangeController.Value.Activate();
                 sceneChangeController.Value.ManageSceneLoadOperation(operation);
             } else {
                 pendingOperation = operation;
-                sceneChangeController.AddObserver(this);
+                sceneChangeControlerObserver.StartWatching();
             }
         }
 
-        public void OnValueChanged(SceneChangeController newValue) {
+        public void OnChangeControllerUpdated(SceneChangeController newValue) {
             if (newValue == null)
                 return;
             StartPendingOperation();
         }
 
-        public void EndTransition() {
-            sceneChangeController.Value.Deactivate();
+        private void StartPendingOperation() {
+            sceneChangeControlerObserver.StopWatching();
+            sceneChangeController.Value.ManageSceneLoadOperation(pendingOperation);
+            pendingOperation = null;
+        }
+
+        public void EndTransition(UnityAction onFinish) {
+            sceneChangeController.Value.Deactivate(onFinish);
         }
 
         public AsyncOperation LoadSceneAsync() {
             return SceneManager.LoadSceneAsync(transitionScene.Path, LoadSceneMode.Additive);
-        }
-
-        private void StartPendingOperation() {
-            sceneChangeController.RemoveObserver(this);
-            sceneChangeController.Value.ManageSceneLoadOperation(pendingOperation);
-            pendingOperation = null;
         }
     }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ed0cbdbcdab706488c984e4c270bfe9, type: 3}
-  m_Name: BasicSceneTransition
+  m_Name: SampleBasicSceneTransition
   m_EditorClassIdentifier: 
   transitionScene:
     sceneName: SceneLoading
