@@ -5,21 +5,20 @@ using UnityEngine.SceneManagement;
 
 namespace Toblerone.Toolbox.SceneManagement {
     public static class SceneSwitcher {
-        private static Dictionary<string, SceneLoader> scenesLoaded = null;
-        private static Dictionary<string, SceneLoader> ScenesLoaded => scenesLoaded;
+        private static Dictionary<string, SceneLoader> ScenesLoaded { get; set; } = null;
 
         private static void CreateScenesLoadedDictionary() {
-            scenesLoaded = new Dictionary<string, SceneLoader>();
+            ScenesLoaded = new Dictionary<string, SceneLoader>();
             for (int index = 0; index < SceneManager.sceneCount; index++) {
                 Scene scene = SceneManager.GetSceneAt(index);
-                scenesLoaded.Add(scene.path, null);
+                ScenesLoaded.Add(scene.path, null);
             }
         }
 
         private static string currentMainScene = null;
 
         private static void InitVariables() {
-            if (scenesLoaded != null && currentMainScene != null)
+            if (ScenesLoaded != null && currentMainScene != null)
                 return;
             CreateScenesLoadedDictionary();
             currentMainScene = SceneManager.GetActiveScene().path;
@@ -77,7 +76,7 @@ namespace Toblerone.Toolbox.SceneManagement {
                 unloadOperation = ScenesLoaded[scenePath].UnloadSceneAsync();
             else
                 unloadOperation = SceneManager.UnloadSceneAsync(scenePath);
-            scenesLoaded.Remove(scenePath);
+            ScenesLoaded.Remove(scenePath);
             return unloadOperation;
         }
 
