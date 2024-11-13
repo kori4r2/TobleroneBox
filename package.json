@@ -6,7 +6,8 @@
 	"unity": "2020.3",
 	"dependencies": {
 		"com.unity.inputsystem": "1.0.2",
-		"com.unity.textmeshpro": "3.0.6"
+		"com.unity.textmeshpro": "3.0.9",
+		"com.unity.addressables": "1.16.19"
 	},
 	"samples": [
 		{
@@ -18,6 +19,11 @@
 			"displayName": "Update Manager",
 			"description": "A couple of simple scenes showcasing how to use the custom Update Manager",
 			"path": "Samples~/UpdateManager"
+		},
+		{
+			"displayName": "Scene Changer",
+			"description": "A few scenes showing how to use the basic SceneChanger system. Testing should be done by entering play mode from one of the main scenes (SceneA or SceneB)",
+			"path": "Samples~/SceneChanger"
 		}
 	]
 }
