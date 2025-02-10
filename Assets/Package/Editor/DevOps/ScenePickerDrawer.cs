@@ -31,7 +31,7 @@ namespace Toblerone.Toolbox.EditorScripts {
         }
 
         private void FindSerializedSceneObject() {
-            bool hasSceneInfo = (!string.IsNullOrEmpty(assetPath.stringValue) || !string.IsNullOrEmpty(guid.stringValue));
+            bool hasSceneInfo = !string.IsNullOrEmpty(assetPath.stringValue) || !string.IsNullOrEmpty(guid.stringValue);
             if (!sceneObj && hasSceneInfo) {
                 FindSceneObjUsingGUID();
                 FindSceneObjUsingPathIfNull();
