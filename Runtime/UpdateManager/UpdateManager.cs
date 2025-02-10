@@ -1,63 +1,32 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public class UpdateManager : MonoBehaviour {
-        private static UpdateManager instance = null;
-        public static UpdateManager Instance {
-            get {
-                if (instance)
-                    return instance;
-                GameObject emptyObject = new GameObject("UpdateManager");
-                emptyObject.transform.SetParent(null);
-                instance = emptyObject.AddComponent<UpdateManager>();
-                return instance;
-            }
-        }
+    public class UpdateManager<T> : MonoBehaviour where T : ManagedBehaviour {
         [SerializeField] private bool persistOnSceneChange = false;
-        private HashSet<ManagedMonoBehaviour> behaviours = new HashSet<ManagedMonoBehaviour>();
-        private ManagedMonoBehaviour[] behavioursArray;
-        private bool hashSetAltered = true;
+        [SerializeField] private RuntimeSet<T> behaviours;
+        private T[] behavioursArray = null;
 
-        private void Awake() {
-            if (instance != null) {
-                Destroy(this);
-                return;
-            }
+        protected virtual void Awake() {
             if (persistOnSceneChange)
                 DontDestroyOnLoad(this);
-            instance = this;
-        }
-
-        public static void AddBehaviour(ManagedMonoBehaviour newBehaviour) {
-            if (Instance.behaviours.Contains(newBehaviour))
-                return;
-            Instance.behaviours.Add(newBehaviour);
-            Instance.hashSetAltered = true;
-        }
-
-        public static void RemoveBehaviour(ManagedMonoBehaviour newBehaviour) {
-            if (!instance || !Instance.behaviours.Contains(newBehaviour))
-                return;
-            Instance.behaviours.Remove(newBehaviour);
-            Instance.hashSetAltered = true;
-        }
-
-        private void Update() {
-            if (hashSetAltered) {
-                UpdateArray();
-                hashSetAltered = false;
-            }
-            TryUpdateRegisteredObjects();
+            UpdateArray();
+            behaviours.ListenToChanges(UpdateArray);
         }
 
         private void UpdateArray() {
-            behavioursArray = new ManagedMonoBehaviour[behaviours.Count];
-            behaviours.CopyTo(behavioursArray);
+            behavioursArray = behaviours.ToArray();
         }
 
-        private void TryUpdateRegisteredObjects() {
-            foreach (ManagedMonoBehaviour behaviour in behavioursArray) {
+        protected virtual void OnDestroy() {
+            behaviours.StopListening(UpdateArray);
+        }
+
+        protected virtual void Update() {
+            TryUpdateRegisteredObjects();
+        }
+
+        protected virtual void TryUpdateRegisteredObjects() {
+            foreach (T behaviour in behavioursArray) {
                 if (!behaviour || !behaviour.ShouldUpdate)
                     continue;
                 behaviour.ManagedUpdate();
