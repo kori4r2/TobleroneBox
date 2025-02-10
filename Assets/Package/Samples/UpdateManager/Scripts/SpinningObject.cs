@@ -1,8 +1,8 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox.UpdateManagerSample {
-    public class SpinningObject : ManagedMonoBehaviour {
-        [SerializeField] private SpinningObjectRuntimeSet runtimeSet;
+    public class SpinningObject : ManagedBehaviour {
+        [SerializeField] protected SpinningObjectRuntimeSet runtimeSet;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] float spinningSpeed = 25f;
         [SerializeField] private bool automaticActivationEnabled = true;
@@ -13,20 +13,30 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
             spinAxis = Random.onUnitSphere;
         }
 
+        protected override void AddToRuntimeSet() {
+            runtimeSet.AddElement(this);
+        }
+
+        protected override void RemoveFromRuntimeSet() {
+            runtimeSet.RemoveElement(this);
+        }
+
         public override void ManagedUpdate() {
             transform.Rotate(spinAxis, spinningSpeed * Time.deltaTime, Space.Self);
         }
 
         protected override void OnEnable() {
-            if (automaticActivationEnabled)
-                base.OnEnable();
-            runtimeSet.AddElement(this);
+            bool wasUpdating = ShouldUpdate;
+            base.OnEnable();
+            if (!automaticActivationEnabled)
+                ShouldUpdate = wasUpdating;
         }
 
         protected override void OnDisable() {
-            if (automaticActivationEnabled)
-                base.OnDisable();
-            runtimeSet.RemoveElement(this);
+            bool wasUpdating = ShouldUpdate;
+            base.OnDisable();
+            if (!automaticActivationEnabled)
+                ShouldUpdate = wasUpdating;
         }
 
         public void StartSpinning() {
