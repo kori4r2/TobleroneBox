@@ -2,27 +2,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolableObject {
-        protected const string expandTooltip = "Expand pool by one object at a time or by Pool Size when over the limit";
+    public abstract class ObjectPool<T> : MonoBehaviour where T : PoolableObject {
         protected abstract T ObjectPrefab { get; }
-        [SerializeField] protected int poolSize;
-        [SerializeField, Tooltip(expandTooltip)] protected bool expandOneByOne = true;
-        [SerializeField] protected GenericVariable<ObjectPool<T>> reference;
+        [SerializeField] protected int poolSize = 10;
         public int PoolSize => poolSize;
-        protected abstract GenericEvent<T> DespawnedObjectEvent { get; }
-        protected GenericEventListener<T> despawnedObjectEventListener;
+        private int poolIncrementSize = 0;
         protected Queue<T> objectQueue = new Queue<T>();
+        protected HashSet<T> spawnedObjects = new HashSet<T>();
 
         protected virtual void Awake() {
             BuildPool();
-            if (reference)
-                reference.Value = this;
-            despawnedObjectEventListener = new GenericEventListener<T>(DespawnedObjectEvent, ReturnObjectToPool);
-        }
-
-        protected virtual void OnDestroy() {
-            if (reference && reference.Value == this)
-                reference.Value = null;
         }
 
         protected virtual void BuildPool() {
@@ -33,16 +22,26 @@ namespace Toblerone.Toolbox {
 
         protected void InstantiateNewPoolObject() {
             T newObject = Instantiate(ObjectPrefab, Vector3.zero, Quaternion.identity);
+            newObject.SetDespawnCallback(ReturnObjectToPool);
             ReturnObjectToPool(newObject);
         }
 
-        public virtual void ReturnObjectToPool(T objectDespawned) {
+        public virtual void ReturnObjectToPool(PoolableObject objectDespawned) {
             GameObject gameObj = objectDespawned.gameObject;
             gameObj.transform.SetParent(transform);
             gameObj.SetActive(false);
-            objectQueue.Enqueue(objectDespawned);
+            spawnedObjects.Remove((T)objectDespawned);
+            objectQueue.Enqueue((T)objectDespawned);
         }
 
+        public virtual void ReturnAllObjectsToPool() {
+            foreach (T obj in new List<T>(spawnedObjects)) {
+                ReturnObjectToPool(obj);
+            }
+        }
+
+        public virtual T InstantiateObject(Transform transform) { return InstantiateObject(transform.position, transform.rotation); }
+        public virtual T InstantiateObject(Vector3 position) { return InstantiateObject(position, Quaternion.identity); }
         public virtual T InstantiateObject(Vector3 position, Quaternion rotation) {
             if (objectQueue.Count <= 0)
                 ExpandPool();
@@ -50,26 +49,28 @@ namespace Toblerone.Toolbox {
             GameObject newObj = instantiatedObject.gameObject;
             newObj.transform.SetPositionAndRotation(position, rotation);
             newObj.SetActive(true);
-            instantiatedObject.InitObject();
+            instantiatedObject.ResetObject();
+            spawnedObjects.Add(instantiatedObject);
             return instantiatedObject;
         }
 
-        protected void ExpandPool() {
-            if (expandOneByOne) {
+        protected abstract void ExpandPool();
+
+        protected void ExpandPoolByFixedNumber(int increment) {
+            for (int count = 0; count < increment; count++) {
                 InstantiateNewPoolObject();
-                poolSize++;
-            } else {
-                BuildPool();
-                poolSize += poolSize;
             }
+            poolSize += increment;
         }
 
-        protected virtual void OnEnable() {
-            despawnedObjectEventListener.StartListeningEvent();
+        protected void ExpandPoolByCurrentSize() {
+            BuildPool();
+            poolSize += poolSize;
         }
 
-        protected virtual void OnDisable() {
-            despawnedObjectEventListener.StopListeningEvent();
+        protected void ExpandPoolArithmeticProgression(int commonDifference) {
+            poolIncrementSize += commonDifference;
+            ExpandPoolByFixedNumber(poolIncrementSize);
         }
     }
 }
