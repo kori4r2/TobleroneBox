@@ -7,7 +7,8 @@ namespace Toblerone.Toolbox {
         public bool IsMoving => CanMove && movableRigidbody.velocity.magnitude > Mathf.Epsilon;
         public bool CanMove => movableRigidbody.bodyType != RigidbodyType2D.Static;
         private bool shouldUpdateVelocity = false;
-        private Vector2 currentVelocity = Vector2.zero;
+        private Vector2 newVelocity = Vector2.zero;
+        public Vector2 CurrentVelocity => movableRigidbody.velocity;
 
         public Movable2D(Rigidbody2D movableRigid) {
             movableRigidbody = movableRigid;
@@ -26,12 +27,12 @@ namespace Toblerone.Toolbox {
             movableRigidbody.bodyType = RigidbodyType2D.Kinematic;
         }
 
-        public void SetVelocity(Vector2 newVelocity) {
+        public void SetVelocity(Vector2 velocity) {
             if (!CanMove)
                 return;
 
             shouldUpdateVelocity = true;
-            currentVelocity = newVelocity;
+            newVelocity = velocity;
         }
 
         public void UpdateMovable() {
@@ -40,7 +41,7 @@ namespace Toblerone.Toolbox {
 
         private void UpdateVelocity() {
             if (shouldUpdateVelocity)
-                movableRigidbody.velocity = currentVelocity;
+                movableRigidbody.velocity = newVelocity;
             shouldUpdateVelocity = false;
         }
     }
