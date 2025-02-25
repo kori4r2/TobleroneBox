@@ -10,6 +10,7 @@ namespace Toblerone.Toolbox {
         public string Name { get => sceneName; private set => sceneName = value; }
         public string Path { get => assetPath; private set => assetPath = value; }
         public string GUID { get => guid; private set => guid = value; }
+        public bool IsEmpty => string.IsNullOrEmpty(assetPath) || string.IsNullOrEmpty(sceneName);
 
         public ScenePicker() {
             sceneName = "";

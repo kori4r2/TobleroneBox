@@ -7,7 +7,6 @@ namespace Toblerone.Toolbox.SceneManagement {
     public class SceneTransitionInfo : ScriptableObject {
         [SerializeField] private ScenePicker transitionScene;
         [SerializeField] private SceneChangeControllerVariable sceneChangeController;
-        public SceneChangeControllerVariable SceneChangeController => sceneChangeController;
         private VariableObserver<SceneChangeController> sceneChangeControlerObserver;
         private AsyncOperation pendingOperation = null;
         private Scene? loadedScene = null;
@@ -19,6 +18,7 @@ namespace Toblerone.Toolbox.SceneManagement {
                 return loadedScene.Value;
             }
         }
+        private bool NoTransition => transitionScene.IsEmpty || sceneChangeController == null;
 
         private void Awake() {
             sceneChangeControlerObserver = new VariableObserver<SceneChangeController>(
@@ -32,10 +32,15 @@ namespace Toblerone.Toolbox.SceneManagement {
                 Debug.LogError($"[SceneTransition]: Transition callback missing for PrepareTransition call");
                 return;
             }
-            sceneChangeController.Value.Activate(onPrepared);
+            if (NoTransition)
+                onPrepared.Invoke();
+            else
+                sceneChangeController.Value.Activate(onPrepared);
         }
 
         public void ManageTransition(AsyncOperation operation) {
+            if (NoTransition)
+                return;
             if (pendingOperation != null) {
                 Debug.LogError($"[SceneTransition]: Tried to start a transition while operation is already pending.");
                 if (sceneChangeController.Value != null)
@@ -43,14 +48,14 @@ namespace Toblerone.Toolbox.SceneManagement {
                 return;
             }
             if (sceneChangeController.Value != null) {
-                sceneChangeController.Value.ManageSceneLoadOperation(operation);
+                sceneChangeController.Value.DisplaySceneLoadOperation(operation);
             } else {
                 pendingOperation = operation;
                 sceneChangeControlerObserver.StartWatching();
             }
         }
 
-        public void OnChangeControllerUpdated(SceneChangeController newValue) {
+        private void OnChangeControllerUpdated(SceneChangeController newValue) {
             if (newValue == null)
                 return;
             StartPendingOperation();
@@ -58,16 +63,23 @@ namespace Toblerone.Toolbox.SceneManagement {
 
         private void StartPendingOperation() {
             sceneChangeControlerObserver.StopWatching();
-            sceneChangeController.Value.ManageSceneLoadOperation(pendingOperation);
+            sceneChangeController.Value.DisplaySceneLoadOperation(pendingOperation);
             pendingOperation = null;
         }
 
         public void EndTransition(UnityAction onFinish) {
-            sceneChangeController.Value.Deactivate(onFinish);
+            if (onFinish == null) {
+                Debug.LogError($"[SceneTransition]: Transition callback missing for EndTransition call");
+                return;
+            }
+            if (NoTransition)
+                onFinish.Invoke();
+            else
+                sceneChangeController.Value.Deactivate(onFinish);
         }
 
         public AsyncOperation LoadSceneAsync() {
-            return SceneManager.LoadSceneAsync(transitionScene.Path, LoadSceneMode.Additive);
+            return NoTransition ? null : SceneManager.LoadSceneAsync(transitionScene.Path, LoadSceneMode.Additive);
         }
     }
 }

@@ -13,8 +13,11 @@ namespace Toblerone.Toolbox.SceneManagement {
             }
 
             AsyncOperation loadOperation = sceneLoader.SceneTransitionInfo.LoadSceneAsync();
-            loadOperation.completed += _ => SceneChangeCallback.Invoke(sceneLoader);
             activatedTransitionScenes.Add(sceneLoader.SceneTransitionInfo);
+            if (loadOperation == null)
+                SceneChangeCallback.Invoke(sceneLoader);
+            else
+                loadOperation.completed += _ => SceneChangeCallback.Invoke(sceneLoader);
         }
     }
 }
