@@ -38,6 +38,7 @@ namespace Toblerone.Toolbox {
         public void StopListening(UnityAction callback) {
             onChange.RemoveListener(callback);
         }
+
         public bool Contains(T element) {
             return activeObjectsHashSet.Contains(element);
         }

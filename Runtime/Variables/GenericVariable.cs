@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Toblerone.Toolbox {
     public abstract class GenericVariable<T> : ScriptableObject {
         protected List<IVariableObserver<T>> observers = new List<IVariableObserver<T>>();
-        [SerializeField] protected T value;
+        [SerializeField] protected T value = default;
 
         public T Value {
             get => value;
