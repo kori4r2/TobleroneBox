@@ -72,7 +72,7 @@ namespace Toblerone.Toolbox.SceneManagement {
 
         private static AsyncOperation UnloadExistingSceneAsync(string scenePath) {
             AsyncOperation unloadOperation;
-            if (ScenesLoaded[scenePath] != null)
+            if (ScenesLoaded.ContainsKey(scenePath) && ScenesLoaded[scenePath] != null)
                 unloadOperation = ScenesLoaded[scenePath].UnloadSceneAsync();
             else
                 unloadOperation = SceneManager.UnloadSceneAsync(scenePath);

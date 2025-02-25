@@ -4,19 +4,18 @@ using UnityEngine.UI;
 
 namespace Toblerone.Toolbox.SceneManagement {
     public class BasicSceneChangeController : SceneChangeController {
-        private bool isActive = false;
-        private bool showProgress = false;
-        private AsyncOperation currentLoadOperation = null;
-        [SerializeField] private SceneChangeControllerVariable reference = null;
-        [SerializeField] private Image fillImage = null;
-        [SerializeField] private GameObject rootObject = null;
+        protected bool isActive = false;
+        protected AsyncOperation currentLoadOperation = null;
+        [SerializeField] protected SceneChangeControllerVariable reference = null;
+        [SerializeField] protected Image fillImage = null;
+        [SerializeField] protected GameObject rootObject = null;
         [Header("Animation Events")]
-        [SerializeField] private BoolEventSO toggleTransitionAnimation = null;
-        [SerializeField] private EventSO transitionAnimationFinished = null;
-        private EventListener transitionAnimationListener = null;
-        private UnityAction transitionCallback = null;
+        [SerializeField] protected BoolEventSO toggleTransitionAnimation = null;
+        [SerializeField] protected EventSO transitionAnimationFinished = null;
+        protected EventListener transitionAnimationListener = null;
+        protected UnityAction transitionCallback = null;
 
-        private void Awake() {
+        protected virtual void Awake() {
             ResetParameters();
             reference.Value = this;
             if (transitionAnimationFinished == null || toggleTransitionAnimation == null)
@@ -24,31 +23,34 @@ namespace Toblerone.Toolbox.SceneManagement {
             transitionAnimationListener = new EventListener(transitionAnimationFinished, OnAnimationFinished);
         }
 
-        private void OnDestroy() {
+        protected virtual void OnDestroy() {
             if (reference.Value == this)
                 reference.Value = null;
             if (transitionAnimationListener != null && transitionAnimationFinished != null)
                 transitionAnimationListener.StopListeningEvent();
         }
 
-        private void ResetParameters() {
+        protected virtual void ResetParameters() {
             isActive = false;
-            showProgress = false;
             if (fillImage)
                 fillImage.fillAmount = 0;
             currentLoadOperation = null;
         }
 
-        private void Update() {
+        protected virtual void Update() {
             if (!isActive || currentLoadOperation == null)
                 return;
 
             if (fillImage)
-                fillImage.fillAmount = showProgress ? currentLoadOperation.progress / 0.9f : 0;
+                fillImage.fillAmount = currentLoadOperation.progress / 0.9f;
         }
 
-        private void OnAnimationFinished() {
+        protected void OnAnimationFinished() {
             transitionAnimationListener.StopListeningEvent();
+            if (transitionCallback == null) {
+                Debug.LogError("[BasicSceneChangeController]: Animation transition finished, but callback is null");
+                return;
+            }
             UnityAction callback = transitionCallback;
             transitionCallback = null;
             if (isActive) {
@@ -59,55 +61,48 @@ namespace Toblerone.Toolbox.SceneManagement {
         }
 
         public override void Activate(UnityAction onPrepared) {
-            if (transitionAnimationListener == null) {
+            if (transitionAnimationListener == null)
                 ActivateImmediate(onPrepared);
-                return;
-            }
-            if (transitionCallback != null) {
-                Debug.Log("[BasicSceneChangeController]: Tried to start animation transition while another is underway");
-                return;
-            }
-            transitionCallback = onPrepared;
-            transitionAnimationListener.StartListeningEvent();
-            toggleTransitionAnimation.Raise(true);
-            return;
+            else
+                WaitForAnimationTransition(onPrepared, true);
         }
 
-        private void ActivateImmediate(UnityAction onPrepared) {
+        protected void ActivateImmediate(UnityAction onPrepared) {
             ResetParameters();
             rootObject.SetActive(true);
             onPrepared?.Invoke();
         }
 
-        public override void Deactivate(UnityAction onFinish) {
-            if (transitionAnimationListener == null) {
-                DeactivateImmediate(onFinish);
-                return;
-            }
+        protected void WaitForAnimationTransition(UnityAction callback, bool toggleValue) {
             if (transitionCallback != null) {
-                Debug.Log("[BasicSceneChangeController]: Tried to start animation transition while another is underway");
+                Debug.LogWarning("[BasicSceneChangeController]: Tried to start animation transition while another is underway");
                 return;
             }
-            transitionCallback = onFinish;
+            transitionCallback = callback;
             transitionAnimationListener.StartListeningEvent();
-            toggleTransitionAnimation.Raise(false);
-            return;
+            toggleTransitionAnimation.Raise(toggleValue);
         }
 
-        private void DeactivateImmediate(UnityAction onFinish) {
+        public override void Deactivate(UnityAction onFinish) {
+            if (transitionAnimationListener == null)
+                DeactivateImmediate(onFinish);
+            else
+                WaitForAnimationTransition(onFinish, false);
+        }
+
+        protected void DeactivateImmediate(UnityAction onFinish) {
             ResetParameters();
             rootObject.SetActive(false);
             onFinish?.Invoke();
         }
 
-        public override void ManageSceneLoadOperation(AsyncOperation loadOperation) {
+        public override void DisplaySceneLoadOperation(AsyncOperation loadOperation) {
             if (isActive) {
                 Debug.LogWarning("[BasicSceneChangeController]: Tried to manage a new load operation while already active");
                 return;
             }
             currentLoadOperation = loadOperation;
             isActive = true;
-            showProgress = true;
         }
     }
 }
