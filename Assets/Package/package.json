@@ -21,9 +21,19 @@
 			"path": "Samples~/UpdateManager"
 		},
 		{
+			"displayName": "Object Pooling",
+			"description": "A simple scene that allows spawning and despawning game objects using an Object Pool",
+			"path": "Samples~/ObjectPooling"
+		},
+		{
 			"displayName": "Scene Changer",
 			"description": "A few scenes showing how to use the basic SceneChanger system. Testing should be done by entering play mode from one of the main scenes (SceneA or SceneB)",
 			"path": "Samples~/SceneChanger"
+		},
+		{
+			"displayName": "Custom Editors",
+			"description": "An empty scene with examples of custom editors or property drawers showcasing the helper functions created",
+			"path": "Samples~/CustomEditors"
 		}
 	]
 }
