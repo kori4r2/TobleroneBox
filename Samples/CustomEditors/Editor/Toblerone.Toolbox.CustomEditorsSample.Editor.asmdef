@@ -1,0 +1,19 @@
+{
+    "name": "Toblerone.Toolbox.CustomEditorsSample.Editor",
+    "rootNamespace": "Toblerone.Toolbox.CustomEditorsSample.Editor",
+    "references": [
+        "GUID:26e496ba8fd678d7582615201881b2d2",
+        "GUID:3263a08fe4458bd4589d088769ef9a05"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
