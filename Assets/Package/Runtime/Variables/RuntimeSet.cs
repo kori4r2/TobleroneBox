@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Toblerone.Toolbox {
     public abstract class RuntimeSet<T> : ScriptableObject, IEnumerable<T> where T : MonoBehaviour {
         protected Dictionary<GameObject, T> activeObjsDictionary = new Dictionary<GameObject, T>();
         protected HashSet<T> activeObjectsHashSet = new HashSet<T>();
+        protected UnityEvent onChange = new UnityEvent();
 
         public int Count => activeObjectsHashSet.Count;
 
@@ -18,12 +20,24 @@ namespace Toblerone.Toolbox {
             return activeObjectsHashSet.GetEnumerator();
         }
 
+        public void CopyTo(T[] array) {
+            activeObjectsHashSet.CopyTo(array);
+        }
+
         public T[] ToArray() {
             T[] array = new T[Count];
-            activeObjectsHashSet.CopyTo(array);
+            CopyTo(array);
             return array;
         }
         #endregion
+
+        public void ListenToChanges(UnityAction callback) {
+            onChange.AddListener(callback);
+        }
+
+        public void StopListening(UnityAction callback) {
+            onChange.RemoveListener(callback);
+        }
 
         public bool Contains(T element) {
             return activeObjectsHashSet.Contains(element);
@@ -41,6 +55,7 @@ namespace Toblerone.Toolbox {
 
             activeObjsDictionary.Add(newElementObj, newElement);
             activeObjectsHashSet.Add(newElement);
+            onChange.Invoke();
         }
 
         public void RemoveElement(T elementToRemove) {
@@ -50,6 +65,7 @@ namespace Toblerone.Toolbox {
             GameObject elementObj = elementToRemove.gameObject;
             activeObjsDictionary.Remove(elementObj);
             activeObjectsHashSet.Remove(elementToRemove);
+            onChange.Invoke();
         }
 
         public T GetActiveElement(GameObject gameObj) {

@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox.UpdateManagerSample {
     public class SpinningObjectSpawner : MonoBehaviour {
+        [SerializeField] private SpinningObjectManager manager;
         [SerializeField] private SpinningObject prefab;
         [SerializeField] private float maxObjects = 1000f;
         [SerializeField] private float spawnRange = 100f;
@@ -51,7 +52,8 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
         }
 
         public void ToggleUpdateManager() {
-            UpdateManager.Instance.gameObject.SetActive(!UpdateManager.Instance.gameObject.activeSelf);
+            if (manager)
+                manager.gameObject.SetActive(!manager.gameObject.activeSelf);
         }
     }
 }

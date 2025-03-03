@@ -1,25 +1,21 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public abstract class ManagedMonoBehaviour : MonoBehaviour {
+    public abstract class ManagedBehaviour : MonoBehaviour {
         public bool ShouldUpdate { get; protected set; }
+        protected abstract void AddToRuntimeSet();
+        protected abstract void RemoveFromRuntimeSet();
 
         public abstract void ManagedUpdate();
 
-        protected virtual void Awake() {
-            UpdateManager.AddBehaviour(this);
-        }
-
-        protected virtual void OnDestroy() {
-            UpdateManager.RemoveBehaviour(this);
-        }
-
         protected virtual void OnEnable() {
             ShouldUpdate = true;
+            AddToRuntimeSet();
         }
 
         protected virtual void OnDisable() {
             ShouldUpdate = false;
+            RemoveFromRuntimeSet();
         }
     }
 }
