@@ -48,8 +48,8 @@ namespace Toblerone.Toolbox {
             T instantiatedObject = objectQueue.Dequeue();
             GameObject newObj = instantiatedObject.gameObject;
             newObj.transform.SetPositionAndRotation(position, rotation);
-            newObj.SetActive(true);
             instantiatedObject.ResetObject();
+            newObj.SetActive(true);
             spawnedObjects.Add(instantiatedObject);
             return instantiatedObject;
         }

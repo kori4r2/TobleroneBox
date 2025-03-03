@@ -1,0 +1,16 @@
+{
+    "name": "TobleroneBox.ObjectPooling",
+    "rootNamespace": "Toblerone.Toolbox.ObjectPoolingSample",
+    "references": [
+        "GUID:f32b1e5c2273b7f47afe6362607ed475"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
