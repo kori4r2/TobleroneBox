@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Sprites;
 
 namespace Toblerone.Toolbox.EditorScripts {
     public static class EditorUtils {
@@ -10,17 +11,6 @@ namespace Toblerone.Toolbox.EditorScripts {
             return position;
         }
 
-        public static Texture2D GetCroppedTexture(Sprite sprite) {
-            Texture2D croppedTexture = new Texture2D((int)sprite.rect.width, (int)sprite.rect.height, sprite.texture.format, false);
-            Color[] pixels = sprite.texture.GetPixels((int)sprite.textureRect.x,
-                                                      (int)sprite.textureRect.y,
-                                                      (int)sprite.textureRect.width,
-                                                      (int)sprite.textureRect.height);
-            croppedTexture.SetPixels(pixels);
-            croppedTexture.Apply();
-            return croppedTexture;
-        }
-
         public static Rect NewRectBelow(Rect rect) {
             Rect returnValue = new Rect(rect);
             returnValue.y += rect.height;
@@ -29,9 +19,14 @@ namespace Toblerone.Toolbox.EditorScripts {
         }
 
         public static Rect CropRect(Rect rect, Rect limits) {
-            if (rect.xMax > limits.xMax) {
-                rect.width = Mathf.Max(0f, limits.xMax - rect.xMin);
-            }
+            float xOffset = (rect.xMin < limits.xMin) ? limits.xMin - rect.xMin : 0;
+            float yOffset = (rect.yMin < limits.yMin) ? limits.yMin - rect.yMin : 0;
+            if (xOffset > 0 || yOffset > 0)
+                rect.position += new Vector2(xOffset, yOffset);
+            if (rect.xMax > limits.xMax)
+                rect.width -= rect.xMax - limits.xMax;
+            if (rect.yMax > limits.yMax)
+                rect.height -= rect.yMax - limits.yMax;
             return rect;
         }
 
