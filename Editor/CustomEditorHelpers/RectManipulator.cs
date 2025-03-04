@@ -110,22 +110,22 @@ namespace Toblerone.Toolbox.EditorScripts {
 
         public void MoveToLeftOf(Rect rect, bool centerVertical = false) {
             xPosition = rect.position.x - xSize;
-            yPosition = centerVertical ? rect.position.y + rect.size.y / 2 - ySize / 2 : rect.position.y;
+            yPosition = centerVertical ? rect.position.y + (rect.size.y / 2) - (ySize / 2) : rect.position.y;
         }
 
         public void MoveToRightOf(Rect rect, bool centerVertical = false) {
             xPosition = rect.position.x + rect.size.x;
-            yPosition = centerVertical ? rect.position.y + rect.size.y / 2 - ySize / 2 : rect.position.y;
+            yPosition = centerVertical ? rect.position.y + (rect.size.y / 2) - (ySize / 2) : rect.position.y;
         }
 
         public void MoveToAbove(Rect rect, bool centerHorizontal = false) {
             yPosition = rect.position.y - ySize;
-            xPosition = centerHorizontal ? rect.position.x + rect.size.x / 2 - xSize / 2 : rect.position.x;
+            xPosition = centerHorizontal ? rect.position.x + (rect.size.x / 2) - (xSize / 2) : rect.position.x;
         }
 
         public void MoveToBelow(Rect rect, bool centerHorizontal = false) {
             yPosition = rect.position.y + rect.size.y;
-            xPosition = centerHorizontal ? rect.position.x + rect.size.x / 2 - xSize / 2 : rect.position.x;
+            xPosition = centerHorizontal ? rect.position.x + (rect.size.x / 2) - (xSize / 2) : rect.position.x;
         }
 
         public void OffsetPosition(float verticalOffset, float horizontalOffset) {
