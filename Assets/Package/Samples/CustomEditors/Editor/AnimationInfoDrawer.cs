@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEditor;
 using Toblerone.Toolbox.EditorScripts;
-using log4net.Util;
-using UnityEditor.Sprites;
 
 namespace Toblerone.Toolbox.CustomEditorsSample.Editor {
     [CustomPropertyDrawer(typeof(AnimationInfo))]
@@ -66,9 +64,9 @@ namespace Toblerone.Toolbox.CustomEditorsSample.Editor {
             rectManipulator.SetSize(null, EditorGUIUtility.singleLineHeight);
             durationRect = rectManipulator.GetRect();
             rectManipulator.SetSize(null, TEXTURE_SIZE);
-            rectManipulator.OffsetVerticalPosition(durationRect.size.y + marginSize / 2f);
+            rectManipulator.OffsetVerticalPosition(durationRect.size.y + (marginSize / 2f));
             spriteRect = rectManipulator.GetRect();
-            rectManipulator.OffsetVerticalPosition(spriteRect.size.y + marginSize / 2f);
+            rectManipulator.OffsetVerticalPosition(spriteRect.size.y + (marginSize / 2f));
             rectManipulator.SetSize(null, 2 * EditorGUIUtility.singleLineHeight);
             animationRect = rectManipulator.GetRect();
         }
@@ -136,7 +134,7 @@ namespace Toblerone.Toolbox.CustomEditorsSample.Editor {
         private void DrawAnimationSprite() {
             rectManipulator.ResetToRect(spriteRect);
             rectManipulator.SetSize(TEXTURE_SIZE, TEXTURE_SIZE);
-            rectManipulator.OffsetHorizontalPosition(spriteRect.width / 2f - TEXTURE_SIZE / 2f);
+            rectManipulator.OffsetHorizontalPosition((spriteRect.width / 2f) - (TEXTURE_SIZE / 2f));
             Rect textureRect = EditorUtils.CropRect(rectManipulator.GetRect(), spriteRect);
             Sprite animationSprite = sprites.GetArrayElementAtIndex(currentIndex).objectReferenceValue as Sprite;
             float aspect = animationSprite.textureRect.width / animationSprite.textureRect.height;

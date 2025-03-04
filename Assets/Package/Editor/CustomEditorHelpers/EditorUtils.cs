@@ -1,13 +1,12 @@
 using UnityEngine;
 using UnityEditor;
-using UnityEditor.Sprites;
 
 namespace Toblerone.Toolbox.EditorScripts {
     public static class EditorUtils {
         public static Rect DrawSeparator(Rect position, float thickness = 2f, float padding = 5f) {
             Rect lineRect = new Rect(position.x, position.y + padding + thickness, position.width, thickness);
             EditorGUI.DrawRect(lineRect, Color.grey);
-            position.position = new Vector2(position.x, position.y + padding * 2f + thickness);
+            position.position = new Vector2(position.x, position.y + (padding * 2f) + thickness);
             return position;
         }
 
