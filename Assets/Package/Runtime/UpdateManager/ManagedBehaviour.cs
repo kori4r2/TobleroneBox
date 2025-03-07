@@ -6,7 +6,7 @@ namespace Toblerone.Toolbox {
         protected abstract void AddToRuntimeSet();
         protected abstract void RemoveFromRuntimeSet();
 
-        public abstract void ManagedUpdate();
+        public abstract void ManagedUpdate(float deltaTime);
 
         protected virtual void OnEnable() {
             ShouldUpdate = true;

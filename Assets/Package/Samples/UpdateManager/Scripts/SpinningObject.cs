@@ -21,8 +21,8 @@ namespace Toblerone.Toolbox.UpdateManagerSample {
             runtimeSet.RemoveElement(this);
         }
 
-        public override void ManagedUpdate() {
-            transform.Rotate(spinAxis, spinningSpeed * Time.deltaTime, Space.Self);
+        public override void ManagedUpdate(float deltaTime) {
+            transform.Rotate(spinAxis, spinningSpeed * deltaTime, Space.Self);
         }
 
         protected override void OnEnable() {
