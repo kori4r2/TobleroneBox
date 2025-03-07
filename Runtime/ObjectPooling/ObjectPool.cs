@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public abstract class ObjectPool<T> : MonoBehaviour where T : PoolableObject {
+    public abstract class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour, IPoolableObject {
         protected abstract T ObjectPrefab { get; }
         [SerializeField] protected int poolSize = 10;
         public int PoolSize => poolSize;
@@ -26,8 +26,8 @@ namespace Toblerone.Toolbox {
             ReturnObjectToPool(newObject);
         }
 
-        public virtual void ReturnObjectToPool(PoolableObject objectDespawned) {
-            GameObject gameObj = objectDespawned.gameObject;
+        public virtual void ReturnObjectToPool(IPoolableObject objectDespawned) {
+            GameObject gameObj = objectDespawned.GameObject;
             gameObj.transform.SetParent(transform);
             gameObj.SetActive(false);
             spawnedObjects.Remove((T)objectDespawned);

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public class UpdateManager<T> : MonoBehaviour where T : ManagedBehaviour {
+    public class UpdateManager<T> : MonoBehaviour where T : MonoBehaviour, IManagedBehaviour {
         [SerializeField] private bool persistOnSceneChange = false;
         [SerializeField] private RuntimeSet<T> behaviours;
         private T[] behavioursArray = null;

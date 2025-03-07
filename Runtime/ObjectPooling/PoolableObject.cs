@@ -2,10 +2,11 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Toblerone.Toolbox {
-    public abstract class PoolableObject : MonoBehaviour {
-        protected UnityAction<PoolableObject> despawnCallback = null;
+    public abstract class PoolableObject : MonoBehaviour, IPoolableObject {
+        protected UnityAction<IPoolableObject> despawnCallback = null;
+        public GameObject GameObject => gameObject;
 
-        public virtual void SetDespawnCallback(UnityAction<PoolableObject> callback) {
+        public virtual void SetDespawnCallback(UnityAction<IPoolableObject> callback) {
             despawnCallback = callback;
         }
 
