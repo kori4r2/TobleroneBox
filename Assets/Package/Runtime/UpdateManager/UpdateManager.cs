@@ -22,14 +22,14 @@ namespace Toblerone.Toolbox {
         }
 
         protected virtual void Update() {
-            TryUpdateRegisteredObjects();
+            TryUpdateRegisteredObjects(Time.deltaTime);
         }
 
-        protected virtual void TryUpdateRegisteredObjects() {
+        protected virtual void TryUpdateRegisteredObjects(float deltaTime) {
             foreach (T behaviour in behavioursArray) {
                 if (!behaviour || !behaviour.ShouldUpdate)
                     continue;
-                behaviour.ManagedUpdate();
+                behaviour.ManagedUpdate(deltaTime);
             }
         }
     }
