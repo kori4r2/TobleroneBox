@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public abstract class ManagedBehaviour : MonoBehaviour {
+    public abstract class ManagedBehaviour : MonoBehaviour, IManagedBehaviour {
         public bool ShouldUpdate { get; protected set; }
         protected abstract void AddToRuntimeSet();
         protected abstract void RemoveFromRuntimeSet();
