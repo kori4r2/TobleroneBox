@@ -149,11 +149,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 118106482}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a35b60458ed8aa7daeebc179d990ae7, type: 3}
+  m_Script: {fileID: 11500000, guid: 4e815388630ee229bbdd6bd6f6a8bd18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 1220967345}
-  prefab: {fileID: 6665376318612372022, guid: 69bc0ddc032db6ebb94e39a0837eb5d2, type: 3}
+  prefab: {fileID: 7040956397035307508, guid: b86fd16af8bcb0d499c69961b41df11c, type: 3}
   maxObjects: 1000
   spawnRange: 200
   secondsBetweenSpawns: 0.05
@@ -682,7 +682,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 118106483}
-        m_TargetAssemblyTypeName: Toblerone.Toolbox.UpdateManagerSample.SpinningObjectSpawner,
+        m_TargetAssemblyTypeName: Toblerone.Toolbox.UpdateManagerSample.SpinningObjectSpawnerInstanced,
           TobleroneBox.UpdateManagerSample
         m_MethodName: SpawnMaxObjects
         m_Mode: 1
@@ -865,11 +865,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1220967343}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bc045020da5c84039c1ab1b21794a37, type: 3}
+  m_Script: {fileID: 11500000, guid: 38c59f3d2afbf99a89f7bdbc0e8ed695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   persistOnSceneChange: 0
-  runtimeSet: {fileID: 11400000, guid: d6e80cafc383b4594832c3a24cc68498, type: 2}
 --- !u!1 &1273737907
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,7 +1054,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 118106483}
-        m_TargetAssemblyTypeName: Toblerone.Toolbox.UpdateManagerSample.SpinningObjectSpawner,
+        m_TargetAssemblyTypeName: Toblerone.Toolbox.UpdateManagerSample.SpinningObjectSpawnerInstanced,
           TobleroneBox.UpdateManagerSample
         m_MethodName: ToggleUpdateManager
         m_Mode: 1
