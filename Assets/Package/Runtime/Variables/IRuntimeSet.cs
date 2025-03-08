@@ -12,6 +12,7 @@ namespace Toblerone.Toolbox {
         public bool Contains(T element);
         public void AddElement(T newElement);
         public void RemoveElement(T elementToRemove);
+        public void Clear();
         public T GetActiveElement(GameObject gameObj);
     }
 }
