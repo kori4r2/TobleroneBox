@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   persistOnSceneChange: 0
-  behaviours: {fileID: 11400000, guid: d6e80cafc383b4594832c3a24cc68498, type: 2}
+  runtimeSet: {fileID: 11400000, guid: d6e80cafc383b4594832c3a24cc68498, type: 2}
 --- !u!4 &403750947
 Transform:
   m_ObjectHideFlags: 0

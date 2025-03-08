@@ -67,6 +67,10 @@ namespace Toblerone.Toolbox {
             onChange.Invoke();
         }
 
+        public void Clear() {
+            hashSet.Clear();
+        }
+
         public T GetActiveElement(GameObject gameObj) {
             if (!gameObjDictionary.ContainsKey(gameObj))
                 return null;
