@@ -4,23 +4,23 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Toblerone.Toolbox {
-    public abstract class RuntimeSet<T> : ScriptableObject, IRuntimeSet<T> where T : MonoBehaviour {
-        protected Dictionary<GameObject, T> activeObjsDictionary = new Dictionary<GameObject, T>();
-        protected HashSet<T> activeObjectsHashSet = new HashSet<T>();
+    public abstract class InstancedRuntimeSet<T> : IRuntimeSet<T> where T : MonoBehaviour {
+        protected HashSet<T> hashSet = new HashSet<T>();
+        protected Dictionary<GameObject, T> gameObjDictionary = new Dictionary<GameObject, T>();
+        public int Count => hashSet.Count;
         protected UnityEvent onChange = new UnityEvent();
-        public int Count => activeObjectsHashSet.Count;
 
         #region IEnumerable
-        IEnumerator IEnumerable.GetEnumerator() {
-            return activeObjectsHashSet.GetEnumerator();
+        public IEnumerator<T> GetEnumerator() {
+            return hashSet.GetEnumerator();
         }
 
-        public IEnumerator<T> GetEnumerator() {
-            return activeObjectsHashSet.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() {
+            return hashSet.GetEnumerator();
         }
 
         public void CopyTo(T[] array) {
-            activeObjectsHashSet.CopyTo(array);
+            hashSet.CopyTo(array);
         }
 
         public T[] ToArray() {
@@ -39,7 +39,7 @@ namespace Toblerone.Toolbox {
         }
 
         public bool Contains(T element) {
-            return activeObjectsHashSet.Contains(element);
+            return hashSet.Contains(element);
         }
 
         public void AddElement(T newElement) {
@@ -47,13 +47,13 @@ namespace Toblerone.Toolbox {
                 return;
 
             GameObject newElementObj = newElement.gameObject;
-            if (activeObjsDictionary.ContainsKey(newElementObj)) {
-                Debug.LogWarning($"RuntimeSet {name} already contains an element from object {newElementObj}", this);
+            if (gameObjDictionary.ContainsKey(newElementObj)) {
+                Debug.LogWarning($"Instantiated RuntimeSet already contains an element from object {newElementObj}");
                 return;
             }
 
-            activeObjsDictionary.Add(newElementObj, newElement);
-            activeObjectsHashSet.Add(newElement);
+            gameObjDictionary.Add(newElementObj, newElement);
+            hashSet.Add(newElement);
             onChange.Invoke();
         }
 
@@ -62,16 +62,16 @@ namespace Toblerone.Toolbox {
                 return;
 
             GameObject elementObj = elementToRemove.gameObject;
-            activeObjsDictionary.Remove(elementObj);
-            activeObjectsHashSet.Remove(elementToRemove);
+            gameObjDictionary.Remove(elementObj);
+            hashSet.Remove(elementToRemove);
             onChange.Invoke();
         }
 
         public T GetActiveElement(GameObject gameObj) {
-            if (!activeObjsDictionary.ContainsKey(gameObj))
+            if (!gameObjDictionary.ContainsKey(gameObj))
                 return null;
 
-            return activeObjsDictionary[gameObj];
+            return gameObjDictionary[gameObj];
         }
     }
 }

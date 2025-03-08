@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Toblerone.Toolbox.UpdateManagerSample {
     public class SpinningObject : ManagedBehaviour {
-        [SerializeField] protected SpinningObjectRuntimeSet runtimeSet;
+        [SerializeField] protected SpinningObjectRuntimeSet runtimeSet = null;
         [SerializeField] private MeshRenderer meshRenderer;
         [SerializeField] float spinningSpeed = 25f;
         [SerializeField] private bool automaticActivationEnabled = true;

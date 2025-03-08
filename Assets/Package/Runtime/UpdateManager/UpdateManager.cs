@@ -1,24 +1,38 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox {
-    public class UpdateManager<T> : MonoBehaviour where T : MonoBehaviour, IManagedBehaviour {
-        [SerializeField] private bool persistOnSceneChange = false;
-        [SerializeField] private RuntimeSet<T> behaviours;
-        private T[] behavioursArray = null;
+    public abstract class UpdateManager<T> : MonoBehaviour where T : MonoBehaviour, IManagedBehaviour {
+        [SerializeField] protected bool persistOnSceneChange = false;
+        protected abstract IRuntimeSet<T> RuntimeSet { get; set; }
+        protected T[] behavioursArray = null;
 
         protected virtual void Awake() {
             if (persistOnSceneChange)
                 DontDestroyOnLoad(this);
-            UpdateArray();
-            behaviours.ListenToChanges(UpdateArray);
+            UpdateArraysAndCallbacks();
         }
 
-        private void UpdateArray() {
-            behavioursArray = behaviours.ToArray();
+        protected void UpdateArraysAndCallbacks() {
+            if (RuntimeSet == null)
+                return;
+            UpdateArray();
+            RuntimeSet.ListenToChanges(UpdateArray);
+        }
+
+        public void ChangeRuntimeSet(IRuntimeSet<T> newSet) {
+            if (RuntimeSet != null)
+                RuntimeSet.StopListening(UpdateArray);
+            RuntimeSet = newSet;
+            UpdateArraysAndCallbacks();
+        }
+
+        protected void UpdateArray() {
+            behavioursArray = RuntimeSet.ToArray();
         }
 
         protected virtual void OnDestroy() {
-            behaviours.StopListening(UpdateArray);
+            if (RuntimeSet != null)
+                RuntimeSet.StopListening(UpdateArray);
         }
 
         protected virtual void Update() {
