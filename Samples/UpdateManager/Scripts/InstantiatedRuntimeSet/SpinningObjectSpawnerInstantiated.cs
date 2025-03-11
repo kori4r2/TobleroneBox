@@ -1,15 +1,15 @@
 using UnityEngine;
 
 namespace Toblerone.Toolbox.UpdateManagerSample {
-    public class SpinningObjectSpawnerInstanced : MonoBehaviour {
-        [SerializeField] private SpinningObjectManagerInstanced manager;
+    public class SpinningObjectSpawnerInstantiated : MonoBehaviour {
+        [SerializeField] private SpinningObjectManagerInstantiated manager;
         [SerializeField] private SpinningObjectRuntimeOnly prefab;
         [SerializeField] private float maxObjects = 1000f;
         [SerializeField] private float spawnRange = 100f;
         [SerializeField, Range(0.01f, 10)] private float secondsBetweenSpawns = 1f;
         [SerializeField] private bool spawnInstantly = false;
         [SerializeField] private bool objectsSpinOnSpawn = true;
-        private SpinningObjectInstancedRuntimeSet runtimeSet = new SpinningObjectInstancedRuntimeSet();
+        private SpinningObjectInstantiatedRuntimeSet runtimeSet = new SpinningObjectInstantiatedRuntimeSet();
         private int objectCount = 0;
         private float timer = 0;
 

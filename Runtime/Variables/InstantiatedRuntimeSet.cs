@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Toblerone.Toolbox {
-    public abstract class InstancedRuntimeSet<T> : IRuntimeSet<T> where T : MonoBehaviour {
+    public abstract class InstantiatedRuntimeSet<T> : IRuntimeSet<T> where T : MonoBehaviour {
         protected HashSet<T> hashSet = new HashSet<T>();
         protected Dictionary<GameObject, T> gameObjDictionary = new Dictionary<GameObject, T>();
         public int Count => hashSet.Count;
