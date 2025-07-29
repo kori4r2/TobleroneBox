@@ -42,7 +42,7 @@ namespace Toblerone.Toolbox {
             return hashSet.Contains(element);
         }
 
-        public void AddElement(T newElement) {
+        public virtual void AddElement(T newElement) {
             if (Contains(newElement))
                 return;
 
@@ -57,7 +57,7 @@ namespace Toblerone.Toolbox {
             onChange.Invoke();
         }
 
-        public void RemoveElement(T elementToRemove) {
+        public virtual void RemoveElement(T elementToRemove) {
             if (!Contains(elementToRemove))
                 return;
 
@@ -67,11 +67,13 @@ namespace Toblerone.Toolbox {
             onChange.Invoke();
         }
 
-        public void Clear() {
+        public virtual void Clear() {
             hashSet.Clear();
+            gameObjDictionary.Clear();
+            onChange.Invoke();
         }
 
-        public T GetActiveElement(GameObject gameObj) {
+        public virtual T GetActiveElement(GameObject gameObj) {
             if (!gameObjDictionary.ContainsKey(gameObj))
                 return null;
 
